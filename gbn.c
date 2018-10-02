@@ -149,6 +149,7 @@ ssize_t gbn_recv(int sockfd, void *buf, size_t len, int flags){
 	/* receiver receive packet from sender and if valid, send DATAACK */
 	printf ("in receive\n");
 	gbnhdr sender_packet;
+	sender_packet.data = malloc(len * sender_packet);
 	struct sockaddr t;
 	struct sockaddr* tmp = &t;
 	socklen_t t_int;
@@ -198,7 +199,8 @@ RECV:
 		s.rec_seqnum ++;
 		return sender_packet_size;
 	} else {
-		printf("why my head so big");
+		printf("why my head so big\n");
+		printf("recived type: %d\n",sender_packet.type);
 		goto RECV;
 	}
 	printf("%d\n", sender_packet.type);
