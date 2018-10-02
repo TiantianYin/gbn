@@ -3,7 +3,7 @@ state_t s;
 uint16_t checksum(uint16_t *buf, int nwords)
 {
 	uint32_t sum;
-	printf("buf size: %llu, provided size: %d\n", sizeof(*buf), nwords);
+	printf("buf size: %lu, provided size: %d\n", sizeof(*buf), nwords);
 
 	for (sum = 0; nwords > 0; nwords--)
 		sum += *buf++;
