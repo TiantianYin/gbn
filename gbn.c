@@ -165,6 +165,7 @@ RECV:
 	/*if (check_packetType(sender_packet, DATA) == 0){*/
 	printf("juuuust test db0\n");
 	if (sender_packet.type == DATA) {
+		alarm(TIMEOUT);
 		/* check data validity */
 		printf("juuuust test db1\n");
 		if (check_seqnum(sender_packet, s.rec_seqnum) == -1) {
@@ -446,5 +447,5 @@ ssize_t maybe_recvfrom(int  s, char *buf, size_t len, int flags, struct sockaddr
 		return retval;
 	}
 	/*----- Packet lost -----*/
-	return(len);  /* Simulate a success */
+	return -1;  /* Simulate a success */
 }
