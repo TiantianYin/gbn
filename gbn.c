@@ -258,6 +258,7 @@ int gbn_connect(int sockfd, const struct sockaddr *server, socklen_t socklen){
 	
 
 	gbnhdr send_header;
+	printf("gbn_connect db0\n");
 	make_packet(&send_header, SYN, 0, 0, NULL, 0);
 
 	signal(SIGALRM, sig_handler);
