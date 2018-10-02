@@ -265,7 +265,7 @@ int gbn_connect(int sockfd, const struct sockaddr *server, socklen_t socklen){
 
 	int attempt = 0;
 	s.timed_out = -1;
-
+	printf("gbn_connect db1\n");
 	/* send SYN and wait for SYNACK. after that, send a SYNACK back. */
 	while (attempt < MAX_ATTEMPT) {
 		printf("db7 sending type: %d\n", send_header.type);
@@ -274,6 +274,7 @@ int gbn_connect(int sockfd, const struct sockaddr *server, socklen_t socklen){
 			printf("sender send syn failed\n");
 			continue;
 		}
+		printf("gbn_connect db2\n");
 		s.receiverServerAddr = *server;
 		s.receiverSocklen = socklen;
 		s.state = SYN_SENT;
