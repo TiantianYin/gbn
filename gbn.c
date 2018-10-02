@@ -23,7 +23,11 @@ void sig_handler(int signum){
 
 
 void make_packet(gbnhdr* packet,uint8_t type, uint8_t seqnum, int isHeader, char *buffer, int datalen){
-	printf("make_packet: data: %u, sdatalen %i, type %d\n", *(uint16_t *) buffer, datalen, type);
+	if (buffer != NULL) {
+		printf("make_packet: data: %u, sdatalen %i, type %d\n", *(uint16_t *) buffer, datalen, type);
+	} else {
+		printf("make_packet: sdatalen %i, type %d\n", datalen, type);
+	}
 	packet->type = type;
 	packet->seqnum = seqnum;
 
