@@ -254,6 +254,7 @@ int gbn_connect(int sockfd, const struct sockaddr *server, socklen_t socklen){
 	s.senderSocklen = socklen;
 	serv_len = socklen;
 	serveraddrlen = socklen;
+	printf("gbn_connect db-1\n");
 	*serveraddr = *server;
 	
 
