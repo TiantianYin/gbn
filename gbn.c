@@ -3,7 +3,7 @@ state_t s;
 struct sockaddr serv;
 struct sockaddr cli;
 socklen_t serv_len;
-struct sockaddr *serveraddr;  /* server(receiver)'s IP and port are stored here */
+struct sockaddr *serveraddr = &serv;  /* server(receiver)'s IP and port are stored here */
 socklen_t serveraddrlen;
 uint16_t checksum(uint16_t *buf, int nwords)
 {
