@@ -249,7 +249,7 @@ int gbn_connect(int sockfd, const struct sockaddr *server, socklen_t socklen){
 	s.mode = SLOW;
 	s.senderServerAddr = *server;
 	s.senderSocklen = socklen;
-	&serv = server;
+	serv = *server;
 
 	gbnhdr send_header;
 	make_packet(&send_header, SYN, 0, 0, NULL, 0);
