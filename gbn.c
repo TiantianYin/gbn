@@ -1,6 +1,7 @@
 #include "gbn.h"
 state_t s;
 struct sockaddr serv;
+struct sockaddr cli;
 uint16_t checksum(uint16_t *buf, int nwords)
 {
 	uint32_t sum;
@@ -183,7 +184,7 @@ RECV:
 		make_packet(&rec_header, DATAACK, s.rec_seqnum, 0, NULL, 0);
 		printf("db3 sending type: %d\n", rec_header.type);
 		printf("juuuust test db5\n");
-		if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, tmp, tmp_int) == -1) {
+		if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, cli, tmp_int) == -1) {
 			printf ("error sending in gbn_recv\n");
 			return -1;
 		}
@@ -365,6 +366,7 @@ int gbn_accept(int sockfd, struct sockaddr *client, socklen_t *socklen){
 	int attempt = 0;
 	s.timed_out = -1;
 	gbnhdr send_header;
+	cli = *client;
 	/* wait for SYN, then send SYNACK and wait for SYNACK. */
 	while (attempt < MAX_ATTEMPT) {
 		printf("enter accpet while\n");
