@@ -155,7 +155,7 @@ RECV:
 		}
 		printf("juuuust test db2\n");
 		int sender_packet_size = sender_packet.datalen;
-		if (checksum(&sender_packet.data, sender_packet_size) == -1) {
+		if (checksum((uint16_t *)&sender_packet.data, sender_packet_size) == -1) {
 			printf("data is corrupt\n");
 			return 0;
 		}
