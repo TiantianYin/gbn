@@ -106,7 +106,7 @@ ssize_t gbn_send(int sockfd, const void *buf, size_t len, int flags){
 
 			gbnhdr packet;
 			make_packet(&packet, DATA, s.send_seqnum, -1, slicedBuf, currSize);
-			printf("db2 sending type: %d, size: %u\n", packet.type, sizeof(packet));
+			printf("db2 sending type: %d, size: %lu\n", packet.type, sizeof(packet));
 			if (attempts[i] < MAX_ATTEMPT && sendto(sockfd, &packet, sizeof(packet), 0, &serv, serv_len) == -1) {
 				attempts[i] ++;
 				continue;
@@ -158,7 +158,7 @@ ssize_t gbn_recv(int sockfd, void *buf, size_t len, int flags){
 RECV:
 	if (recvfrom(sockfd, (char *)&sender_packet, sizeof(sender_packet), 0, tmp, tmp_int) == -1) {
 		printf("error in gbn_recv pl1\n");
-		printf("packet size: %u\n", sizeof(sender_packet));
+		printf("packet size: %lu\n", sizeof(sender_packet));
 		goto RECV;
 	}
 	printf("gbn_recv pl1 success, type: %d \n", sender_packet.type);
