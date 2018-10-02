@@ -2,6 +2,7 @@
 state_t s;
 struct sockaddr serv;
 struct sockaddr cli;
+socklen_t serv_len;
 uint16_t checksum(uint16_t *buf, int nwords)
 {
 	uint32_t sum;
@@ -104,7 +105,7 @@ ssize_t gbn_send(int sockfd, const void *buf, size_t len, int flags){
 			gbnhdr packet;
 			make_packet(&packet, DATA, s.send_seqnum, -1, slicedBuf, currSize);
 			printf("db2 sending type: %d\n", packet.type);
-			if (attempts[i] < MAX_ATTEMPT && sendto(sockfd, &packet, sizeof(packet), 0, &s.receiverServerAddr, s.receiverSocklen) == -1) {
+			if (attempts[i] < MAX_ATTEMPT && sendto(sockfd, &packet, sizeof(packet), 0, &serv, serv_len) == -1) {
 				attempts[i] ++;
 				continue;
 			}
@@ -248,9 +249,9 @@ int gbn_connect(int sockfd, const struct sockaddr *server, socklen_t socklen){
 	printf("in gbn connect\n");
 	/* Define Global State */
 	s.mode = SLOW;
-	s.senderServerAddr = *server;
 	s.senderSocklen = socklen;
-	serv = *server;
+	serv_len = socklen;
+	
 
 	gbnhdr send_header;
 	make_packet(&send_header, SYN, 0, 0, NULL, 0);
@@ -272,6 +273,7 @@ int gbn_connect(int sockfd, const struct sockaddr *server, socklen_t socklen){
 		s.receiverServerAddr = *server;
 		s.receiverSocklen = socklen;
 		s.state = SYN_SENT;
+		serv = *server;
 		printf("sent type: %d\n", send_header.type);
 		alarm(TIMEOUT);
 		/* waiting for receiving SYNACK */
