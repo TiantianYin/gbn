@@ -142,7 +142,7 @@ ssize_t gbn_send(int sockfd, const void *buf, size_t len, int flags){
 	return 0;
 }
 
-ssize_t gbn_recv(int sockfd, void *buf, size_t len, int flags, struct sockaddr* cl){
+ssize_t gbn_recv(int sockfd, void *buf, size_t len, int flags){
 	/* receiver receive packet from sender and if valid, send DATAACK */
 	printf ("in receive\n");
 	gbnhdr sender_packet;
