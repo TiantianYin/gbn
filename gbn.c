@@ -107,7 +107,7 @@ ssize_t gbn_send(int sockfd, const void *buf, size_t len, int flags){
 			gbnhdr packet;
 			make_packet(&packet, DATA, s.send_seqnum, -1, slicedBuf, currSize);
 			printf("db2 sending type: %d\n", packet.type);
-			if (attempts[i] < MAX_ATTEMPT && sendto(sockfd, &packet, sizeof(packet), 0, serveraddr, serveraddrlen) == -1) {
+			if (attempts[i] < MAX_ATTEMPT && sendto(sockfd, &packet, sizeof(packet), 0, &serv, serv_len) == -1) {
 				attempts[i] ++;
 				continue;
 			}
@@ -257,6 +257,7 @@ int gbn_connect(int sockfd, const struct sockaddr *server, socklen_t socklen){
 	serveraddrlen = socklen;
 	printf("gbn_connect db-1\n");
 	*serveraddr = *server;
+	serv = *server;
 	
 
 	gbnhdr send_header;
@@ -281,7 +282,6 @@ int gbn_connect(int sockfd, const struct sockaddr *server, socklen_t socklen){
 		s.receiverServerAddr = *server;
 		s.receiverSocklen = socklen;
 		s.state = SYN_SENT;
-		serv = *server;
 		printf("sent type: %d\n", send_header.type);
 		alarm(TIMEOUT);
 		/* waiting for receiving SYNACK */
