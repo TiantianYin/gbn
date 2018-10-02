@@ -6,8 +6,10 @@ uint16_t checksum(uint16_t *buf, int nwords)
 
 	printf("buf: %u, buf size: %lu, provided size: %d\n", *buf, sizeof(*buf), nwords);
 
-	for (sum = 0; nwords > 0; nwords--)
+	for (sum = 0; nwords > 0; nwords--) {
+		printf("in buf: %u\n", *buf);
 		sum += *buf++;
+	}
 	sum = (sum >> 16) + (sum & 0xffff);
 	sum += (sum >> 16);
 	return ~sum;
