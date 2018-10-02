@@ -1,5 +1,6 @@
 #include "gbn.h"
 state_t s;
+struct sockaddr serv;
 uint16_t checksum(uint16_t *buf, int nwords)
 {
 	uint32_t sum;
@@ -246,8 +247,9 @@ int gbn_connect(int sockfd, const struct sockaddr *server, socklen_t socklen){
 	printf("in gbn connect\n");
 	/* Define Global State */
 	s.mode = SLOW;
-	s.senderServerAddr = *(struct sockaddr *)server;
+	s.senderServerAddr = *server;
 	s.senderSocklen = socklen;
+	&ser = server;
 
 	gbnhdr send_header;
 	make_packet(&send_header, SYN, 0, 0, NULL, 0);
