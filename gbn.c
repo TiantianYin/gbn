@@ -161,7 +161,7 @@ RECV:
 	/* if a data packet is received, check packet to verify its type */
 	/*if (check_packetType(sender_packet, DATA) == 0){*/
 	printf("juuuust test db0\n");
-	if (sender_packet.type = DATA) {
+	if (sender_packet.type == DATA) {
 		/* check data validity */
 		printf("juuuust test db1\n");
 		if (check_seqnum(sender_packet, s.rec_seqnum) == -1) {
