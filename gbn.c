@@ -388,7 +388,7 @@ int gbn_accept(int sockfd, struct sockaddr *client, socklen_t *socklen){
 				printf("error rec syn from sender\n");
 				return -1;
 			}
-			if (check_packetType(send_header_syn, SYN) == 0) {
+			if (check_packetType(send_header_syn, SYN) != 0) {
 				printf("wrong type received. expect SYN\n");
 				attempt ++;
 				continue;
