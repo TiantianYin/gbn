@@ -367,31 +367,34 @@ int gbn_accept(int sockfd, struct sockaddr *client, socklen_t *socklen){
 	int attempt = 0;
 	s.timed_out = -1;
 	gbnhdr send_header;
-	cli = *client;
+	
+	struct sockaddr t;
+	struct sockaddr* tmp = &t;
+	socklen_t t_int;
+	socklen_t* tmp_int = &t_int;
 	/* wait for SYN, then send SYNACK and wait for SYNACK. */
 	while (attempt < MAX_ATTEMPT) {
 		printf("enter accpet while\n");
-		if (maybe_recvfrom(sockfd, (char *)&send_header, sizeof(send_header), 0, client, socklen) == -1) {
+		if (maybe_recvfrom(sockfd, (char *)&send_header, sizeof(send_header), 0, tmp, tmp_int) == -1) {
 			printf("error rec syn from sender\n");
 			return -1;
 		}
+		cli = *tmp;
 		printf("receive type: %d\n", send_header.type);
 		printf("sending type: %d\n", rec_header.type);
-		if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, client, *socklen) == -1 ) {
+		if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, tmp, *tmp_int) == -1 ) {
 			attempt ++;
 			printf("receiver send synack failed\n");
 			continue;
 		}
-		s.senderServerAddr = *client;
-		s.senderSocklen = *socklen;
+		s.senderServerAddr = *tmp;
+		s.senderSocklen = *tmp_int;
 		printf("receiver sent synack header\n");
 		alarm(TIMEOUT);
 		/* waiting for receiving SYNACK */
 		
 		printf("old send_header type: %d\n", send_header.type);
-		struct sockaddr tmp;
-		socklen_t tmp_int;
-		if (maybe_recvfrom(sockfd, (char *)&send_header, sizeof(send_header), 0, &tmp, &tmp_int) == -1) {
+		if (maybe_recvfrom(sockfd, (char *)&send_header, sizeof(send_header), 0, tmp, tmp_int) == -1) {
 			printf("receiver error in recvfrom syn ack\n");
 			attempt ++;
 			continue;
