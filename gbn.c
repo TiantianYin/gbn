@@ -142,7 +142,7 @@ ssize_t gbn_send(int sockfd, const void *buf, size_t len, int flags){
 	return 0;
 }
 
-ssize_t gbn_recv(int sockfd, void *buf, size_t len, int flags){
+ssize_t gbn_recv(int sockfd, void *buf, size_t len, int flags, struct sockaddr* cl){
 	/* receiver receive packet from sender and if valid, send DATAACK */
 	printf ("in receive\n");
 	gbnhdr sender_packet;
@@ -184,7 +184,7 @@ RECV:
 		make_packet(&rec_header, DATAACK, s.rec_seqnum, 0, NULL, 0);
 		printf("db3 sending type: %d\n", rec_header.type);
 		printf("juuuust test db5\n");
-		if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, tmp_int) == -1) {
+		if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, cl, tmp_int) == -1) {
 			printf ("error sending in gbn_recv\n");
 			return -1;
 		}
