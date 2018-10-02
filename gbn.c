@@ -137,7 +137,7 @@ ssize_t gbn_recv(int sockfd, void *buf, size_t len, int flags){
 	printf ("in receive\n");
 	gbnhdr sender_packet;
 RECV:
-	if (maybe_recvfrom(sockfd, sender_packet, (char *)&sender_packet, 0, &s.senderServerAddr, &s.senderSocklen) == -1) {
+	if (maybe_recvfrom(sockfd, (char *)&sender_packet, sizeof(sender_packet), 0, &s.senderServerAddr, &s.senderSocklen) == -1) {
 		/*printf("error in gbn_recv pl1\n");*/
 		goto RECV;
 	}
