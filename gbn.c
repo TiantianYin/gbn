@@ -378,7 +378,7 @@ int gbn_accept(int sockfd, struct sockaddr *client, socklen_t *socklen){
 	struct sockaddr* tmp = &t;
 	socklen_t t_int;
 	socklen_t* tmp_int = &t_int;
-	bool syned = FALSE;
+	int syned = 0;
 	/* wait for SYN, then send SYNACK and wait for SYNACK. */
 	while (attempt < MAX_ATTEMPT) {
 		printf("enter accpet while\n");
@@ -393,7 +393,7 @@ int gbn_accept(int sockfd, struct sockaddr *client, socklen_t *socklen){
 				attempt ++;
 				continue;
 			}
-			syned = TRUE;
+			syned = 1;
 			cli = *tmp;
 			printf("receive type: %d\n", send_header_syn.type);
 		}
