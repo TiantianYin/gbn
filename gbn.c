@@ -161,7 +161,7 @@ RECV:
 	/* if a data packet is received, check packet to verify its type */
 	/*if (check_packetType(sender_packet, DATA) == 0){*/
 	printf("juuuust test db0\n");
-	if (1) {
+	if (sender_packet.type = DATA) {
 		/* check data validity */
 		printf("juuuust test db1\n");
 		if (check_seqnum(sender_packet, s.rec_seqnum) == -1) {
@@ -183,7 +183,6 @@ RECV:
 		/* receiver reply with DATAACK header with seqnum received */
 		gbnhdr rec_header;
 		make_packet(&rec_header, DATAACK, s.rec_seqnum, 0, NULL, 0);
-		printf("db3 sending type: %d\n", rec_header.type);
 		printf("juuuust test db5\n");
 		if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, tmp, *tmp_int) == -1) {
 			printf ("error sending in gbn_recv\n");
