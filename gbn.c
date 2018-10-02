@@ -3,6 +3,8 @@ state_t s;
 struct sockaddr serv;
 struct sockaddr cli;
 socklen_t serv_len;
+struct sockaddr *serveraddr;  /* server(receiver)'s IP and port are stored here */
+socklen_t serveraddrlen;
 uint16_t checksum(uint16_t *buf, int nwords)
 {
 	uint32_t sum;
@@ -105,7 +107,7 @@ ssize_t gbn_send(int sockfd, const void *buf, size_t len, int flags){
 			gbnhdr packet;
 			make_packet(&packet, DATA, s.send_seqnum, -1, slicedBuf, currSize);
 			printf("db2 sending type: %d\n", packet.type);
-			if (attempts[i] < MAX_ATTEMPT && sendto(sockfd, &packet, sizeof(packet), 0, &serv, serv_len) == -1) {
+			if (attempts[i] < MAX_ATTEMPT && sendto(sockfd, &packet, sizeof(packet), 0, serveraddr, serveraddrlen) == -1) {
 				attempts[i] ++;
 				continue;
 			}
@@ -251,6 +253,8 @@ int gbn_connect(int sockfd, const struct sockaddr *server, socklen_t socklen){
 	s.mode = SLOW;
 	s.senderSocklen = socklen;
 	serv_len = socklen;
+	serveraddr = server;
+	serveraddrlen = socklen;
 	
 
 	gbnhdr send_header;
@@ -295,8 +299,6 @@ int gbn_connect(int sockfd, const struct sockaddr *server, socklen_t socklen){
 			printf("db8 sending type: %d\n", send_header.type);
 			sendto(sockfd, &send_header, sizeof(send_header), 0, server, s.receiverSocklen);
 			return 0;
-		} else if (1) {
-			/* TODO if receive data, turn to rcvd mode */
 		}
 		printf("sender received non-synack\n");
 		printf("recived type: %d\n",rec_header.type);
