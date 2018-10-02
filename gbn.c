@@ -147,26 +147,32 @@ RECV:
 	/*if (check_packetType(sender_packet, DATA) == 0){*/
 	if (1) {
 		/* check data validity */
+		printf("juuuust test db1\n");
 		if (check_seqnum(sender_packet, s.rec_seqnum) == -1) {
 			 printf("received an unexpected seqnum, discarding data...\n");
 			return 0;
 		}
+		printf("juuuust test db2\n");
 		int sender_packet_size = sender_packet.datalen;
 		if (checksum((uint16_t *)sender_packet.data, sender_packet_size) == -1) {
 			printf("data is corrupt\n");
 			return 0;
 		}
+		printf("juuuust test db3\n");
 
 		memcpy(buf, sender_packet.data, sender_packet_size);
+		printf("juuuust test db4\n");
 		printf("sender_packet.data: %s\n", sender_packet.data);
 		/* receiver reply with DATAACK header with seqnum received */
 		gbnhdr rec_header;
 		make_packet(&rec_header, DATAACK, s.rec_seqnum, 0, NULL, 0);
 		printf("db3 sending type: %d\n", rec_header.type);
+		printf("juuuust test db5\n");
 		if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &s.senderServerAddr, s.senderSocklen) == -1) {
 			printf ("error sending in gbn_recv\n");
 			return -1;
 		}
+		printf("juuuust test db6\n");
 		printf("sent data with seqnum %i\n", s.rec_seqnum);
 		/* if successfully send ACK, expected next rec_seqnum ++ */
 		s.rec_seqnum ++;
