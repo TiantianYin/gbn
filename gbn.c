@@ -281,7 +281,6 @@ int gbn_connect(int sockfd, const struct sockaddr *server, socklen_t socklen){
 		alarm(TIMEOUT);
 		/* waiting for receiving SYNACK */
 		gbnhdr rec_header;
-		struct sockaddr tmp;
 		socklen_t tmp_int;
 		if (maybe_recvfrom(sockfd, (char *)&rec_header, sizeof(rec_header), 0, serveraddr, &tmp_int) == -1) {
 			printf("sender error in recvfrom syn ack\n");
