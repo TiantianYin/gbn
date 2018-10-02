@@ -149,7 +149,7 @@ ssize_t gbn_recv(int sockfd, void *buf, size_t len, int flags){
 	/* receiver receive packet from sender and if valid, send DATAACK */
 	printf ("in receive\n");
 	gbnhdr sender_packet;
-	sender_packet.data = malloc(DATALEN);
+	&sender_packet.data = malloc(DATALEN);
 	struct sockaddr t;
 	struct sockaddr* tmp = &t;
 	socklen_t t_int;
