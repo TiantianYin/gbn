@@ -156,7 +156,7 @@ ssize_t gbn_recv(int sockfd, void *buf, size_t len, int flags){
 
 RECV:
 	if (recvfrom(sockfd, (char *)&sender_packet, sizeof(sender_packet), 0, tmp, tmp_int) == -1) {
-		/*printf("error in gbn_recv pl1\n");*/
+		printf("error in gbn_recv pl1\n");
 		goto RECV;
 	}
 	printf("gbn_recv pl1 success, type: %d \n", sender_packet.type);
