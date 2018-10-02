@@ -198,8 +198,7 @@ RECV:
 		s.rec_seqnum ++;
 		return sender_packet_size;
 	} else {
-		printf("why my head so big\n");
-		printf("sender_packet type: %d\n", sender_packet.type);
+		printf("why my head so big");
 		goto RECV;
 	}
 	printf("%d\n", sender_packet.type);
