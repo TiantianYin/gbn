@@ -457,5 +457,5 @@ ssize_t maybe_recvfrom(int  s, char *buf, size_t len, int flags, struct sockaddr
 		return retval;
 	}
 	/*----- Packet lost -----*/
-	return -1;  /* Simulate a success */
+	return (len);  /* Simulate a success */
 }
