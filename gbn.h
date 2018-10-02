@@ -80,7 +80,7 @@ int gbn_socket(int domain, int type, int protocol);
 int gbn_accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
 int gbn_close(int sockfd);
 ssize_t gbn_send(int sockfd, const void *buf, size_t len, int flags);
-ssize_t gbn_recv(int sockfd, void *buf, size_t len, int flags, struct sockaddr* cl);
+ssize_t gbn_recv(int sockfd, void *buf, size_t len, int flags);
 
 ssize_t  maybe_recvfrom(int  s, char *buf, size_t len, int flags, \
             struct sockaddr *from, socklen_t *fromlen);
