@@ -3,6 +3,7 @@ state_t s;
 uint16_t checksum(uint16_t *buf, int nwords)
 {
 	uint32_t sum;
+	printf("buf size: %d, provided size: %d\n", sizeof(*buf), nwords);
 
 	for (sum = 0; nwords > 0; nwords--)
 		sum += *buf++;
@@ -29,7 +30,7 @@ void make_packet(gbnhdr* packet,uint8_t type, uint8_t seqnum, int isHeader, char
 	else {
 		memcpy(packet->data, buffer, datalen);
 		packet->datalen = datalen;
-		packet->checksum = checksum((uint16_t *) buffer, datalen);
+		packet->checksum = checksum((uint16_t *) buffer, (1 + datalen) / 2);
 	}
 }
 
@@ -155,6 +156,7 @@ RECV:
 		}
 		printf("juuuust test db2\n");
 		int sender_packet_size = sender_packet.datalen;
+		printf("juuuust test db2.5\n");
 		if (checksum((uint16_t *)&sender_packet.data, (1 + sender_packet_size) / 2) == -1) {
 			printf("data is corrupt\n");
 			return 0;
