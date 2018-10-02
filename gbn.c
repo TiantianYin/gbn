@@ -253,7 +253,6 @@ int gbn_connect(int sockfd, const struct sockaddr *server, socklen_t socklen){
 	s.mode = SLOW;
 	s.senderSocklen = socklen;
 	serv_len = socklen;
-	serveraddr = server;
 	serveraddrlen = socklen;
 	
 
@@ -284,7 +283,7 @@ int gbn_connect(int sockfd, const struct sockaddr *server, socklen_t socklen){
 		gbnhdr rec_header;
 		struct sockaddr tmp;
 		socklen_t tmp_int;
-		if (maybe_recvfrom(sockfd, (char *)&rec_header, sizeof(rec_header), 0, &tmp, &tmp_int) == -1) {
+		if (maybe_recvfrom(sockfd, (char *)&rec_header, sizeof(rec_header), 0, serveraddr, &tmp_int) == -1) {
 			printf("sender error in recvfrom syn ack\n");
 			attempt ++;
 			continue;
