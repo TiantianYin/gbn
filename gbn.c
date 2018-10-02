@@ -378,21 +378,25 @@ int gbn_accept(int sockfd, struct sockaddr *client, socklen_t *socklen){
 	struct sockaddr* tmp = &t;
 	socklen_t t_int;
 	socklen_t* tmp_int = &t_int;
+	bool syned = FALSE;
 	/* wait for SYN, then send SYNACK and wait for SYNACK. */
 	while (attempt < MAX_ATTEMPT) {
 		printf("enter accpet while\n");
 		gbnhdr send_header_syn;
-		if (maybe_recvfrom(sockfd, (char *)&send_header_syn, sizeof(send_header_syn), 0, tmp, tmp_int) == -1) {
-			printf("error rec syn from sender\n");
-			return -1;
+		if (!syned) {
+			if (maybe_recvfrom(sockfd, (char *)&send_header_syn, sizeof(send_header_syn), 0, tmp, tmp_int) == -1) {
+				printf("error rec syn from sender\n");
+				return -1;
+			}
+			if (check_packetType(send_header_syn, SYN) == 0) {
+				printf("wrong type received. expect SYN\n");
+				attempt ++;
+				continue;
+			}
+			syned = TRUE;
+			cli = *tmp;
+			printf("receive type: %d\n", send_header_syn.type);
 		}
-		if (check_packetType(send_header_syn, SYN) == 0) {
-			printf("wrong type received. expect SYN\n");
-			attempt ++;
-			continue;
-		}
-		cli = *tmp;
-		printf("receive type: %d\n", send_header_syn.type);
 		printf("sending type: %d\n", rec_header.type);
 		if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, tmp, *tmp_int) == -1 ) {
 			attempt ++;
