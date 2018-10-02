@@ -145,6 +145,7 @@ RECV:
 
 	/* if a data packet is received, check packet to verify its type */
 	/*if (check_packetType(sender_packet, DATA) == 0){*/
+	printf("juuuust test db0\n");
 	if (1) {
 		/* check data validity */
 		printf("juuuust test db1\n");
