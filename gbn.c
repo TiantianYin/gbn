@@ -78,9 +78,9 @@ int check_seqnum(const gbnhdr packet, int expected) {
 ssize_t gbn_send(int sockfd, const void *buf, size_t len, int flags){
 	/* split data into multiple packets */
 	int numPackets = (int) len / DATALEN;
-	printf("in send and ready to send %i packets\n", numPackets);
 	int lastPacketSize = len % DATALEN;
 	if (len % DATALEN != 0) numPackets ++;
+	printf("in send and ready to send %i packets\n", numPackets);
 	int attempts[numPackets];
 	memset(attempts, 0, numPackets * sizeof(int));
 	char * slicedBuf = malloc(DATALEN);
@@ -107,7 +107,7 @@ ssize_t gbn_send(int sockfd, const void *buf, size_t len, int flags){
 			gbnhdr packet;
 			make_packet(&packet, DATA, s.send_seqnum, -1, slicedBuf, currSize);
 			/*make_packet(&packet, SYNACK, 0, 0, NULL, 0);*/
-			printf("db2 sending type: %d, size: %lu\n", packet.type, sizeof(packet));
+			printf("db2 sending type: %d, data: %s\n", packet.type, packet.data);
 			if (attempts[i] < MAX_ATTEMPT && sendto(sockfd, &packet, sizeof(packet), 0, &serv, serv_len) == -1) {
 				attempts[i] ++;
 				continue;
@@ -158,7 +158,6 @@ ssize_t gbn_recv(int sockfd, void *buf, size_t len, int flags){
 RECV:
 	if (recvfrom(sockfd, (char *)&sender_packet, sizeof(sender_packet), 0, tmp, tmp_int) == -1) {
 		printf("error in gbn_recv pl1\n");
-		printf("packet size: %lu\n", sizeof(sender_packet));
 		goto RECV;
 	}
 	printf("gbn_recv pl1 success, type: %d \n", sender_packet.type);
@@ -431,16 +430,28 @@ int gbn_accept(int sockfd, struct sockaddr *client, socklen_t *socklen){
 			gbnhdr sender_packet;
 			if (recvfrom(sockfd, (char *)&sender_packet, sizeof(sender_packet), 0, tmp, tmp_int) != -1) {
 				printf("got type:%d, data: %s\n", sender_packet.type, sender_packet.data);
+			} else {
+				printf("error in gbn_recv new pl1\n");
 			}
+			printf("ms1\n");
 			if (recvfrom(sockfd, (char *)&sender_packet, sizeof(sender_packet), 0, tmp, tmp_int) != -1) {
 				printf("got type:%d, data: %s\n", sender_packet.type, sender_packet.data);
+			} else {
+				printf("error in gbn_recv new pl2\n");
 			}
+			printf("ms2\n");
 			if (recvfrom(sockfd, (char *)&sender_packet, sizeof(sender_packet), 0, tmp, tmp_int) != -1) {
 				printf("got type:%d, data: %s\n", sender_packet.type, sender_packet.data);
+			} else {
+				printf("error in gbn_recv new pl3\n");
 			}
+			printf("ms3\n");
 			if (recvfrom(sockfd, (char *)&sender_packet, sizeof(sender_packet), 0, tmp, tmp_int) != -1) {
 				printf("got type:%d, data: %s\n", sender_packet.type, sender_packet.data);
+			} else {
+				printf("error in gbn_recv new pl4\n");
 			}
+			printf("ms4\n");
 			return 0;
 		}
 		printf("received non-synack\n");
