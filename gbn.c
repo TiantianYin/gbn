@@ -157,7 +157,7 @@ ssize_t gbn_recv(int sockfd, void *buf, size_t len, int flags){
 
 
 RECV:
-	if (maybe_recvfrom(sockfd, &sender_packet, sizeof(sender_packet), 0, &tmp, &tmpsocklen) == -1) {
+	if (maybe_recvfrom(sockfd, (char *)&sender_packet, sizeof(sender_packet), 0, &tmp, &tmpsocklen) == -1) {
 		/*printf("error in gbn_recv pl1\n");*/
 		goto RECV;
 	}
@@ -244,7 +244,7 @@ int gbn_close(int sockfd){
 			struct sockaddr tmp;
 			socklen_t tmp_int;
 			gbnhdr finack_packet;
-			if (maybe_recvfrom(sockfd, &finack_packet, sizeof(finack_packet), 0, &tmp, &tmp_int) == -1) {
+			if (maybe_recvfrom(sockfd, (char *)&finack_packet, sizeof(finack_packet), 0, &tmp, &tmp_int) == -1) {
 				continue;
 			}
 			if (finack_packet.type == FINACK) {
