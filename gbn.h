@@ -92,6 +92,8 @@ struct sockaddr serv;
 struct sockaddr cli;
 socklen_t serv_len;
 socklen_t serveraddrlen;
+struct sockaddr *serveraddr = &serv;  /* server(receiver)'s IP and port are stored here */
+socklen_t serveraddrlen;
 
 
 uint16_t checksum(uint16_t *buf, int nwords) {
@@ -239,7 +241,7 @@ ssize_t gbn_send(int sockfd, const void *buf, size_t len, int flags){
 ssize_t gbn_recv(int sockfd, void *buf, size_t len, int flags){
     gbnhdr tmpbuf;
     struct sockaddr si_tmp;
-    int tmpsocklen;
+    socklen_t tmpsocklen;
     gbnhdr* received;
 RECVAGAIN:
     received = &tmpbuf;
