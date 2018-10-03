@@ -434,12 +434,8 @@ int gbn_accept(int sockfd, struct sockaddr *client, socklen_t *socklen){
 			printf("receiver connection established\n");
 
 			gbnhdr sender_packet;
-			struct sockaddr tt;
-			struct sockaddr* ttmp = &tt;
-			socklen_t tt_int;
-			socklen_t* ttmp_int = &tt_int;
 LALALA:
-			if (recvfrom(sockfd, (char *)&sender_packet, sizeof(sender_packet), 0, ttmp, ttmp_int) != -1) {
+			if (recvfrom(sockfd, (char *)&sender_packet, sizeof(sender_packet), 0, tmp, tmp_int) != -1) {
 				printf("got type:%d, data: %s\n", sender_packet.type, sender_packet.data);
 			} else {
 				printf("error in gbn_recv new pl1\n");
