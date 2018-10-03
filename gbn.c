@@ -440,7 +440,7 @@ LALALA:
 			if (recvfrom(sockfd, (char *)&sender_packet, sizeof(sender_packet), 0, tmp, tmp_int) != -1) {
 				printf("got type:%d, data: %s\n", sender_packet.type, sender_packet.data);
 			} else {
-				printf("error in gbn_recv new pl1\n");
+				printf("error in acc new pl1\n");
 			}
 			printf("ms1\n");
 			goto LALALA;
