@@ -304,6 +304,10 @@ int gbn_connect(int sockfd, const struct sockaddr *server, socklen_t socklen){
 			printf("sending s yn ack!!!!!!!!!!!!!!!!!!!!!");
 			printf("db8 sending type: %d\n", send_header.type);
 			sendto(sockfd, &send_header, sizeof(send_header), 0, &serv, s.receiverSocklen);
+			sendto(sockfd, &send_header, sizeof(send_header), 0, &serv, s.receiverSocklen);
+			sendto(sockfd, &send_header, sizeof(send_header), 0, &serv, s.receiverSocklen);
+			sendto(sockfd, &send_header, sizeof(send_header), 0, &serv, s.receiverSocklen);
+			sendto(sockfd, &send_header, sizeof(send_header), 0, &serv, s.receiverSocklen);
 			return 0;
 		}
 		printf("sender received non-synack\n");
