@@ -306,10 +306,11 @@ int gbn_connect(int sockfd, const struct sockaddr *server, socklen_t socklen){
 			gbnhdr send_test;
 			make_packet(&send_test, FIN, 0, 0, NULL, 0);
 TEST:
-			sendto(sockfd, &send_test, sizeof(send_test), 0, &serv, serv_len);
-			sendto(sockfd, &send_test, sizeof(send_test), 0, &serv, serv_len);
-			sendto(sockfd, &send_test, sizeof(send_test), 0, &serv, serv_len);
-			sendto(sockfd, &send_test, sizeof(send_test), 0, &serv, serv_len);
+			if (sendto(sockfd, &send_test, sizeof(send_test), 0, &serv, serv_len) == -1) {
+				printf("sendto failed. wtf??\n");
+			} else {
+				printf("sendto success.\n");
+			}
 			goto TEST;
 			return 0;
 		}
