@@ -25,6 +25,7 @@ uint16_t checksum(uint16_t *buf, int nwords)
 
 void sig_handler(int signum){
 	s.timed_out = 0;
+	attempt++;
 	printf("Timeout has occurred\n");
 	signal(SIGALRM, sig_handler);
 	alarm(TIMEOUT);
@@ -329,14 +330,11 @@ int gbn_connect(int sockfd, const struct sockaddr *server, socklen_t socklen){
 			s.state = ESTABLISHED;
 			printf("sender connection established\n");
 			make_packet(&send_header, SYNACK, 0, 0, NULL, 0);
-			printf("sending s yn ack!!!!!!!!!!!!!!!!!!!!!");
 			printf("db8 sending type: %d\n", send_header.type);
-			sendto(sockfd, &send_header, sizeof(send_header), 0, &serv, s.receiverSocklen);
+			sendto(sockfd, &send_header, sizeof(send_header), 0, &serv, serv_len);
+			attempt = 0;
 			return 0;
 		}
-		printf("sender received non-synack\n");
-		printf("recived type: %d\n",rec_header.type);
-		attempt ++;
 	}
 	/* if reach max number of tries, close the connection */
 	s.state = CLOSED;
