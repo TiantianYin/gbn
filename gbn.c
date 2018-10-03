@@ -126,9 +126,9 @@ ssize_t gbn_send(int sockfd, const void *buf, size_t len, int flags){
 		while (unACK > 0) {
 			/* receive ack header */
 			gbnhdr rec_header;
-			struct sockaddr tmp;
-			socklen_t tmp_int;
-			maybe_recvfrom(sockfd, (char *)&rec_header, sizeof(rec_header), 0, &tmp, &tmp_int);
+			struct sockaddr tmp_sock;
+			socklen_t tmp_sock_len;
+			maybe_recvfrom(sockfd, (char *)&rec_header, sizeof(rec_header), 0, &tmp_sock, &tmp_sock_len);
 			/* verify there is no timeout, verify type = dataack and seqnum are expected */
 			if (check_packetType(rec_header, DATAACK) == 0 && check_seqnum(rec_header, s.rec_seqnum) == 0) {
 				printf("received dataack for seq %d successfully\n", s.rec_seqnum);
@@ -156,12 +156,12 @@ ssize_t gbn_recv(int sockfd, void *buf, size_t len, int flags){
 	
 	gbnhdr sender_packet;
 
-    struct sockaddr tmp;
-    socklen_t tmpsocklen;
+    struct sockaddr tmp_sock;
+    socklen_t tmp_socksocklen;
 
 
 RECV:
-	if (maybe_recvfrom(sockfd, (char *)&sender_packet, sizeof(sender_packet), 0, &tmp, &tmpsocklen) == -1) {
+	if (maybe_recvfrom(sockfd, (char *)&sender_packet, sizeof(sender_packet), 0, &tmp_sock, &tmp_socksocklen) == -1) {
 		goto RECV;
 	}
 
@@ -232,10 +232,10 @@ int gbn_close(int sockfd){
 
 		}
 		else if (s.state == FIN_SENT) {
-			struct sockaddr tmp;
-			socklen_t tmp_int;
+			struct sockaddr tmp_sock;
+			socklen_t tmp_sock_len;
 			gbnhdr finack_packet;
-			if (maybe_recvfrom(sockfd, (char *)&finack_packet, sizeof(finack_packet), 0, &tmp, &tmp_int) == -1) {
+			if (maybe_recvfrom(sockfd, (char *)&finack_packet, sizeof(finack_packet), 0, &tmp_sock, &tmp_sock_len) == -1) {
 				continue;
 			}
 			if (finack_packet.type == FINACK) {
@@ -297,8 +297,8 @@ int gbn_connect(int sockfd, const struct sockaddr *server, socklen_t socklen){
 		alarm(TIMEOUT);
 		/* waiting for receiving SYNACK */
 		gbnhdr rec_header;
-		socklen_t tmp_int;
-		if (maybe_recvfrom(sockfd, (char *)&rec_header, sizeof(rec_header), 0, &serv, &tmp_int) == -1) {
+		socklen_t tmp_sock_len;
+		if (maybe_recvfrom(sockfd, (char *)&rec_header, sizeof(rec_header), 0, &serv, &tmp_sock_len) == -1) {
 			printf("sender error in recvfrom syn ack\n");
 			attempt ++;
 			continue;
@@ -378,9 +378,9 @@ int gbn_accept(int sockfd, struct sockaddr *client, socklen_t *socklen){
 	
 	
 	struct sockaddr t;
-	struct sockaddr* tmp = &t;
-	socklen_t t_int;
-	socklen_t* tmp_int = &t_int;
+	struct sockaddr* tmp_sock = &t;
+	socklen_t t_sock_len;
+	socklen_t* tmp_sock_len = &t_sock_len;
 	cli = *client;
 	cli_len = *socklen;
 	int syned = 0;
@@ -388,7 +388,7 @@ int gbn_accept(int sockfd, struct sockaddr *client, socklen_t *socklen){
 	while (attempt < MAX_ATTEMPT) {
 		gbnhdr send_header_syn;
 		if (!syned) {
-			if (maybe_recvfrom(sockfd, (char *)&send_header_syn, sizeof(send_header_syn), 0, tmp, tmp_int) == -1) {
+			if (maybe_recvfrom(sockfd, (char *)&send_header_syn, sizeof(send_header_syn), 0, tmp_sock, tmp_sock_len) == -1) {
 				printf("error rec syn from sender\n");
 				return -1;
 			}
@@ -398,19 +398,19 @@ int gbn_accept(int sockfd, struct sockaddr *client, socklen_t *socklen){
 				continue;
 			}
 			syned = 1;
-			cli = *tmp;
+			cli = *tmp_sock;
 		}
-		if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, tmp, *tmp_int) == -1 ) {
+		if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, tmp_sock, *tmp_sock_len) == -1 ) {
 			attempt ++;
 			printf("receiver send synack failed\n");
 			continue;
 		}
-		s.senderServerAddr = *tmp;
-		s.senderSocklen = *tmp_int;
+		s.senderServerAddr = *tmp_sock;
+		s.senderSocklen = *tmp_sock_len;
 		alarm(TIMEOUT);
 		/* waiting for receiving SYNACK */
 		gbnhdr send_header;
-		if (maybe_recvfrom(sockfd, (char *)&send_header, sizeof(send_header), 0, tmp, tmp_int) == -1) {
+		if (maybe_recvfrom(sockfd, (char *)&send_header, sizeof(send_header), 0, tmp_sock, tmp_sock_len) == -1) {
 			printf("receiver error in recvfrom syn ack\n");
 			attempt ++;
 			continue;
