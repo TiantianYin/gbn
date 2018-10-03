@@ -241,10 +241,12 @@ ssize_t gbn_send(int sockfd, const void *buf, size_t len, int flags){
 ssize_t gbn_recv(int sockfd, void *buf, size_t len, int flags){
 	gbnhdr tmpbuf;
 	struct sockaddr_in si_tmp;
-	socklen_t tmpsocklen;
+	int tmpsocklen;
 RECVAGAIN:
-    if (recvfrom(sockfd, &tmpbuf, sizeof(tmpbuf), 0, &si_tmp, &tmpsocklen) == -1) {
-    	printf("received failed:\n");
+	if (recvfrom(sockfd, &tmpbuf, sizeof(tmpbuf), 0, &si_tmp, &tmpsocklen) == -1) {
+		printf("received failed:\n");
+		printf("sockfd: %d\n", sockfd);
+		sleep(1);
 		goto RECVAGAIN;
 	} else {
 		printf("received type: %d, data: %s\n", tmpbuf.type, tmpbuf.data);
@@ -547,11 +549,11 @@ int gbn_accept(int sockfd, struct sockaddr *client, socklen_t *socklen){
 			printf("receiver received synack header\n");
 			s.state = ESTABLISHED;
 			printf("receiver connection established\n");
-/*
 			gbnhdr sender_packet;
 LALALA:
 			if (recvfrom(sockfd, (char *)&sender_packet, sizeof(sender_packet), 0, tmp, tmp_int) != -1) {
 				printf("got type:%d, data: %s\n", sender_packet.type, sender_packet.data);
+				printf("sockfd: %d\n", sockfd);
 				return 0;
 			} else {
 				printf("error in acc new pl1\n");
@@ -559,7 +561,6 @@ LALALA:
 			}
 			printf("ms1\n");
 			goto LALALA;
-*/
 			return 0;
 		}
 		printf("received non-synack\n");
