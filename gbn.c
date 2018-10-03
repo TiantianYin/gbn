@@ -201,16 +201,8 @@ RECV:
 		/* if successfully send ACK, expected next rec_seqnum ++ */
 		s.rec_seqnum ++;
 		return sender_packet_size;
-	} else {
-		printf("why my head so big\n");
-		printf("recived type: %d\n",sender_packet.type);
-		goto RECV;
-	}
-	printf("%d\n", sender_packet.type);
-	printf("after check packet\n");
-
 	/* if a connection teardown request is received, reply with FINACK header */
-	if (check_packetType(sender_packet, FIN) == 0) {
+	} else if (check_packetType(sender_packet, FIN) == 0) {
 		printf("reply with FINACK header \n");
 		gbnhdr rec_header;
 		make_packet(&rec_header, FINACK, 0, 0, NULL, 0);
@@ -245,9 +237,14 @@ int gbn_close(int sockfd){
 		gbnhdr rec_header;
 		make_packet(&rec_header, FINACK, 0, 0, NULL, 0);
 		printf("db6 sending type: %d\n", rec_header.type);
-		if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &s.receiverServerAddr, s.receiverSocklen) == -1) return -1;
+		if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &serv, serv_len) == -1) return -1;
 		printf("finack sent to close connection\n");
 		close(sockfd);
+	} else if (s.state == FIN_RCVD) {
+		gbnhdr rec_header;
+		make_packet(&rec_header, FIN, 0, 0, NULL, 0);
+		printf("db9 sending type: %d\n", rec_header.type);
+		if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &serv, serv_len) == -1) return -1;
 	}
 	return(-1);
 }
