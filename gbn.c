@@ -83,7 +83,9 @@ ssize_t gbn_send(int sockfd, const void *buf, size_t len, int flags){
 	int lastPacketSize = len % DATALEN;
 	if (len % DATALEN != 0) numPackets ++;
 	printf("in send and ready to send %i packets\n", numPackets);
-	memset(attempts, 0, numPackets * sizeof(int));
+	int att[numPackets];
+	memset(att, 0, numPackets * sizeof(int));
+	attempts = att;
 	char * slicedBuf = malloc(DATALEN);
 	int i = 0;
 	signal(SIGALRM, sig_handler);
