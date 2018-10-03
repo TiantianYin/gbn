@@ -243,9 +243,8 @@ ssize_t gbn_recv(int sockfd, void *buf, size_t len, int flags){
     struct sockaddr si_tmp;
     socklen_t tmpsocklen;
 RECVAGAIN:
-    received = &tmpbuf;
     recvfrom(sockfd, &tmpbuf, sizeof(tmpbuf), 0, &si_tmp, &tmpsocklen);
-    printf("received type: %d\n", tmpbuf.type);
+    printf("received type: %d, data: %s\n", tmpbuf.type, tmpbuf.data);
     goto RECVAGAIN;
     return 0;
 }
