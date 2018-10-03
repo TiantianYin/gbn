@@ -105,7 +105,8 @@ ssize_t gbn_send(int sockfd, const void *buf, size_t len, int flags){
 			memcpy(slicedBuf, buf + i * DATALEN, currSize);
 
 			gbnhdr packet;
-			make_packet(&packet, DATA, s.send_seqnum, -1, slicedBuf, currSize);
+			/*make_packet(&packet, DATA, s.send_seqnum, -1, slicedBuf, currSize);*/
+			make_packet(&packet, SYNACK, 0, 0, NULL, 0);
 			printf("db2 sending type: %d, size: %lu\n", packet.type, sizeof(packet));
 			if (attempts[i] < MAX_ATTEMPT && sendto(sockfd, &packet, sizeof(packet), 0, &serv, serv_len) == -1) {
 				attempts[i] ++;
