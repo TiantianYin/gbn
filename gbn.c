@@ -1,3 +1,5 @@
+#include "gbn.h"
+
 state_t s;
 struct sockaddr serv;
 struct sockaddr cli;
