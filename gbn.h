@@ -236,10 +236,7 @@ ssize_t gbn_send(int sockfd, const void *buf, size_t len, int flags){
 
 
 
-ssize_t gbn_recv(int sockfd, uint8_t *buf, size_t len, int flags) {
-    if(sockfd != usingsockfd)
-        return -1;
-    //char tmpbuf[DATALEN + 10];
+ssize_t gbn_recv2(int sockfd, void *buf, size_t len, int flags){
     gbnhdr tmpbuf;
     struct sockaddr_in si_tmp;
     int tmpsocklen;
