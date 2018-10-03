@@ -26,7 +26,6 @@ uint16_t checksum(uint16_t *buf, int nwords)
 
 
 void sig_handler(int signum){
-	s.timed_out = 0;
 	attempt ++;
 	int i;
 	for (i = 0; i < numPackets; i++) {
@@ -39,11 +38,6 @@ void sig_handler(int signum){
 
 
 void make_packet(gbnhdr* packet,uint8_t type, uint8_t seqnum, int isHeader, char *buffer, int datalen){
-	if (buffer != NULL) {
-		printf("make_packet: data: %u, sdatalen %i, type %d\n", *(uint16_t *) buffer, datalen, type);
-	} else {
-		printf("make_packet: sdatalen %i, type %d\n", datalen, type);
-	}
 	packet->type = type;
 	packet->seqnum = seqnum;
 
@@ -119,7 +113,6 @@ ssize_t gbn_send(int sockfd, const void *buf, size_t len, int flags){
 
 			gbnhdr packet;
 			make_packet(&packet, DATA, s.send_seqnum, -1, slicedBuf, currSize);
-			printf("db2 sending type: %d, data: %s\n", packet.type, packet.data);
 			if (attempts[i] < MAX_ATTEMPT && sendto(sockfd, &packet, sizeof(packet), 0, &serv, serv_len) == -1) {
 				attempts[i] ++;
 				continue;
@@ -133,14 +126,14 @@ ssize_t gbn_send(int sockfd, const void *buf, size_t len, int flags){
 
 		int unACK = j;
 		while (unACK > 0) {
+			/*TODO check */
 			/* receive ack header */
 			gbnhdr rec_header;
 			struct sockaddr tmp;
 			socklen_t tmp_int;
 			maybe_recvfrom(sockfd, (char *)&rec_header, sizeof(rec_header), 0, &tmp, &tmp_int);
 			/* verify there is no timeout, verify type = dataack and seqnum are expected */
-			if (is_timeout() == -1 && check_packetType(rec_header, DATAACK) == 0
-			&& check_seqnum(rec_header, s.rec_seqnum) == 0) {
+			if (check_packetType(rec_header, DATAACK) == 0 && check_seqnum(rec_header, s.rec_seqnum) == 0) {
 				printf("received successfully\n");
 				s.mode = s.mode == SLOW ? MODERATE : FAST;
 				seqOnTheFly[s.rec_seqnum] = 0;
@@ -310,8 +303,6 @@ int gbn_connect(int sockfd, const struct sockaddr *server, socklen_t socklen){
 
 	signal(SIGALRM, sig_handler);
 
-
-	s.timed_out = -1;
 	printf("gbn_connect db1\n");
 	/* send SYN and wait for SYNACK. after that, send a SYNACK back. */
 	while (attempt < MAX_ATTEMPT) {
@@ -378,7 +369,6 @@ int gbn_bind(int sockfd, const struct sockaddr *server, socklen_t socklen){
 	printf("in bind\n");
 	s.receiverServerAddr = *server;
 	s.receiverSocklen = socklen;
-	s.timed_out = -1;
 	return bind(sockfd, server, socklen);
 }	
 
@@ -411,7 +401,6 @@ int gbn_accept(int sockfd, struct sockaddr *client, socklen_t *socklen){
 
 
 	int attempt = 0;
-	s.timed_out = -1;
 	
 	
 	struct sockaddr t;
