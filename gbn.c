@@ -434,31 +434,17 @@ int gbn_accept(int sockfd, struct sockaddr *client, socklen_t *socklen){
 			printf("receiver connection established\n");
 
 			gbnhdr sender_packet;
+			struct sockaddr tt;
+			struct sockaddr* ttmp = &tt;
+			socklen_t tt_int;
+			socklen_t* ttmp_int = &tt_int;
 LALALA:
-			if (recvfrom(sockfd, (char *)&sender_packet, sizeof(sender_packet), 0, tmp, tmp_int) != -1) {
+			if (recvfrom(sockfd, (char *)&sender_packet, sizeof(sender_packet), 0, ttmp, ttmp_int) != -1) {
 				printf("got type:%d, data: %s\n", sender_packet.type, sender_packet.data);
 			} else {
 				printf("error in gbn_recv new pl1\n");
 			}
 			printf("ms1\n");
-			if (recvfrom(sockfd, (char *)&sender_packet, sizeof(sender_packet), 0, tmp, tmp_int) != -1) {
-				printf("got type:%d, data: %s\n", sender_packet.type, sender_packet.data);
-			} else {
-				printf("error in gbn_recv new pl2\n");
-			}
-			printf("ms2\n");
-			if (recvfrom(sockfd, (char *)&sender_packet, sizeof(sender_packet), 0, tmp, tmp_int) != -1) {
-				printf("got type:%d, data: %s\n", sender_packet.type, sender_packet.data);
-			} else {
-				printf("error in gbn_recv new pl3\n");
-			}
-			printf("ms3\n");
-			if (recvfrom(sockfd, (char *)&sender_packet, sizeof(sender_packet), 0, tmp, tmp_int) != -1) {
-				printf("got type:%d, data: %s\n", sender_packet.type, sender_packet.data);
-			} else {
-				printf("error in gbn_recv new pl4\n");
-			}
-			printf("ms4\n");
 			goto LALALA;
 			return 0;
 		}
