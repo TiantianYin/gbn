@@ -234,7 +234,112 @@ ssize_t gbn_send(int sockfd, const void *buf, size_t len, int flags){
 	return 0;
 }
 
-ssize_t gbn_recv(int sockfd, void *buf, size_t len, int flags){
+
+
+ssize_t gbn_recv(int sockfd, uint8_t *buf, size_t len, int flags) {
+    if(sockfd != usingsockfd)
+        return -1;
+    //char tmpbuf[DATALEN + 10];
+    gbnhdr tmpbuf;
+    struct sockaddr_in si_tmp;
+    int tmpsocklen;
+    gbnhdr* received;
+RECVAGAIN:
+    received = &tmpbuf;
+    recvfrom(sockfd, &tmpbuf, sizeof(tmpbuf), 0, &si_tmp, &tmpsocklen);
+    printf("received type: %d\n", received->type);
+    if(received->type == SYN && received->seqnum == 0) {
+        if(checksum(&tmpbuf, sizeof(gbnhdronly)/2) != 0) {
+            printf("checksum failed ...\n");
+            goto RECVAGAIN;
+        }
+        gbnhdronly rsynackpack;
+        rsynackpack.type = SYNACK;
+        rsynackpack.seqnum = 0;
+        rsynackpack.checksum = 0;
+        //
+        rsynackpack.checksum = checksum(&rsynackpack, sizeof(rsynackpack)/2 );
+        //
+        sendto(sockfd, &rsynackpack, sizeof(rsynackpack), 0, clientaddr, clientaddrlen);
+        goto RECVAGAIN;
+    }
+    if(received->type == FIN && received->seqnum == 0) {
+        if(checksum(&tmpbuf, sizeof(gbnhdronly)/2) != 0) {
+            printf("checksum failed ...\n");
+            goto RECVAGAIN;
+        }
+        
+        gbnhdronly finackpack;
+        finackpack.type = FINACK;
+        finackpack.seqnum = 0;
+        finackpack.checksum = 0;
+        //
+        finackpack.checksum = checksum(&finackpack, sizeof(finackpack)/2 );
+        //
+        sendto(sockfd, &finackpack, sizeof(finackpack), 0, clientaddr, clientaddrlen);
+        sendto(sockfd, &finackpack, sizeof(finackpack), 0, clientaddr, clientaddrlen);
+        sendto(sockfd, &finackpack, sizeof(finackpack), 0, clientaddr, clientaddrlen);
+        sendto(sockfd, &finackpack, sizeof(finackpack), 0, clientaddr, clientaddrlen);
+        sendto(sockfd, &finackpack, sizeof(finackpack), 0, clientaddr, clientaddrlen);
+        sendto(sockfd, &finackpack, sizeof(finackpack), 0, clientaddr, clientaddrlen);
+        sendto(sockfd, &finackpack, sizeof(finackpack), 0, clientaddr, clientaddrlen);
+        sendto(sockfd, &finackpack, sizeof(finackpack), 0, clientaddr, clientaddrlen);
+        sendto(sockfd, &finackpack, sizeof(finackpack), 0, clientaddr, clientaddrlen);
+        sendto(sockfd, &finackpack, sizeof(finackpack), 0, clientaddr, clientaddrlen);
+        return 0;
+    }
+    if(checksum(&tmpbuf, sizeof(tmpbuf)/2) != 0) {
+        printf("checksum failed ...\n");
+        goto RECVAGAIN;
+    }
+    //printf("received!\n");
+    //printf("type: %d\n", received->type);
+    //printf("seqnum is %d should be ", received->seqnum);
+    //printf("%d\n%d\n%d\n", currseq+lastdatalen, currseq, lastdatalen);
+    //
+    
+    if(received->seqnum == 1 & currseq >1000000) {
+        currseq = 1;
+        lastdatalen = 0;
+    }
+    
+    //
+    if(received->type == DATA && received->seqnum < currseq+lastdatalen) {
+        gbnhdronly ulackpack;
+        ulackpack.type = DATAACK;
+        ulackpack.seqnum = received->seqnum;
+
+        ulackpack.checksum = 0;
+        //
+        ulackpack.checksum = checksum(&ulackpack, sizeof(ulackpack)/2 );
+        //
+        sendto(sockfd, &ulackpack, sizeof(ulackpack), 0, clientaddr, clientaddrlen);
+        printf("getting earlier packs again... re-recv\n");
+        goto RECVAGAIN;
+    } else if(received->type == DATA && received->seqnum == currseq+lastdatalen) {
+        gbnhdronly dataackpack;
+        dataackpack.type = DATAACK;
+        dataackpack.seqnum = received->seqnum;
+        printf("%d\n", received->seqnum);
+        dataackpack.checksum = 0;
+        //
+        dataackpack.checksum = checksum(&dataackpack, sizeof(dataackpack)/2 );
+        //
+        sendto(sockfd, &dataackpack, sizeof(dataackpack), 0, clientaddr, clientaddrlen);
+        for(int ii = 0; ii < received->bodylen; ii++) {
+            buf[ii] = received->data[ii];
+        }
+        currseq = received->seqnum;
+        lastdatalen = received->bodylen;
+        return lastdatalen;
+    } else {
+        //printf("wrong or broken pack... re-recv\n");
+        goto RECVAGAIN;
+    }
+}
+
+
+ssize_t gbn_recv2(int sockfd, void *buf, size_t len, int flags){
 	/* receiver receive packet from sender and if valid, send DATAACK */
 	printf ("in receive\n");
 	
