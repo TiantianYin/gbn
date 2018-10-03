@@ -240,8 +240,8 @@ ssize_t gbn_send(int sockfd, const void *buf, size_t len, int flags){
 
 ssize_t gbn_recv(int sockfd, void *buf, size_t len, int flags){
 	gbnhdr tmpbuf;
-	struct sockaddr_in si_tmp;
-	int tmpsocklen;
+	struct sockaddr si_tmp;
+	socklen_t tmpsocklen;
 RECVAGAIN:
 	if (recvfrom(sockfd, &tmpbuf, sizeof(tmpbuf), 0, &si_tmp, &tmpsocklen) == -1) {
 		printf("received failed:\n");
