@@ -193,7 +193,7 @@ RECV:
 		gbnhdr rec_header;
 		make_packet(&rec_header, DATAACK, s.rec_seqnum, 0, NULL, 0);
 		printf("juuuust test db5\n");
-		if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, tmp, *tmp_int) == -1) {
+		if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) {
 			printf ("error sending in gbn_recv\n");
 			return -1;
 		}
