@@ -428,10 +428,8 @@ int gbn_accept(int sockfd, struct sockaddr *client, socklen_t *socklen){
 			s.state = ESTABLISHED;
 			printf("receiver connection established\n");
 			gbnhdr sender_packet;
-			
 			if (recvfrom(sockfd, (char *)&sender_packet, sizeof(sender_packet), 0, tmp, tmp_int) != -1) {
-				gbnhdr* sender_p = &sender_packet;
-				printf("got type:%d, data: %s\n", sender_p->type, sender_p->data);
+				printf("got type:%d, data: %s\n", sender_packet.type, sender_packet.data);
 			} else {
 				printf("error in gbn_recv new pl1\n");
 			}
