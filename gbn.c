@@ -167,7 +167,7 @@ RECV:
 		/*printf("error in gbn_recv pl1\n");*/
 		goto RECV;
 	}
-	printf("gbn_recv pl1 success, type: %d \n", sender_packet.type);
+	printf("gbn_recv pl1 success, type: %d, data: %s\n", sender_packet.type, sender_packet.data);
 
 	/* if a data packet is received, check packet to verify its type */
 	/*if (check_packetType(sender_packet, DATA) == 0){*/
