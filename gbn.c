@@ -156,12 +156,10 @@ ssize_t gbn_recv(int sockfd, void *buf, size_t len, int flags){
 	struct sockaddr t;
 	struct sockaddr* tmp = &t;
 	socklen_t t_int;
-	/*socklen_t* tmp_int = &t_int;*/
+	socklen_t* tmp_int = &t_int;
 
-	gbnhdr tmpbuf;
     struct sockaddr_in si_tmp;
     socklen_t tmpsocklen;
-    gbnhdr* received;
 
 
 RECV:
