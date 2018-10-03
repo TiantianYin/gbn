@@ -242,7 +242,6 @@ ssize_t gbn_recv(int sockfd, void *buf, size_t len, int flags){
     gbnhdr tmpbuf;
     struct sockaddr si_tmp;
     socklen_t tmpsocklen;
-    gbnhdr* received;
 RECVAGAIN:
     received = &tmpbuf;
     recvfrom(sockfd, &tmpbuf, sizeof(tmpbuf), 0, &si_tmp, &tmpsocklen);
