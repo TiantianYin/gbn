@@ -30,14 +30,13 @@ extern int errno;
 #define MAX_ATTEMPT  5    /* max number of retries before timeout       */
 
 /*----- Packet types -----*/
-#define SSS      11
-#define SYN      77        /* Opens a connection                          */
-#define SYNACK   19        /* Acknowledgement of the SYN packet           */
-#define DATA     20        /* Data packets                                */
-#define DATAACK  32        /* Acknowledgement of the DATA packet          */
-#define FIN      43        /* Ends a connection                           */
-#define FINACK   55        /* Acknowledgement of the FIN packet           */
-#define RST      66        /* Reset packet used to reject new connections */
+#define SYN      0        /* Opens a connection                          */
+#define SYNACK   1        /* Acknowledgement of the SYN packet           */
+#define DATA     2        /* Data packets                                */
+#define DATAACK  3       /* Acknowledgement of the DATA packet          */
+#define FIN      4        /* Ends a connection                           */
+#define FINACK   5        /* Acknowledgement of the FIN packet           */
+#define RST      6        /* Reset packet used to reject new connections */
 
 /*----- Go-Back-n packet format -----*/
 typedef struct {
