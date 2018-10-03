@@ -217,36 +217,63 @@ RECV:
 }
 
 
-/* TODO use 4 hand shakes to ternminate */
 int gbn_close(int sockfd){
 	printf("in connection close\n");
-    	printf("state %i\n", s.state);
+    printf("state %i\n", s.state);
 	/* sender initiate a FIN request and wait for FINACK */
-	if (s.state == ESTABLISHED || s.state == SYN_SENT || s.state == SYN_RCVD) {
-		printf("sending fin to close connection \n");
-		gbnhdr send_header;
-		make_packet(&send_header, FIN, 0, 0, NULL, 0);
-		printf("db5 sending type: %d\n", send_header.type);
-		if (sendto(sockfd, &send_header, sizeof(send_header), 0, &cli, cli_len) == -1) return -1;
+    while (1) {
+    	if (s.state == ESTABLISHED || s.state == SYN_SENT || s.state == SYN_RCVD) {
+			printf("sending fin to close connection \n");
+			gbnhdr send_header;
+			make_packet(&send_header, FIN, 0, 0, NULL, 0);
+			printf("db5 sending type: %d\n", send_header.type);
+			if (sendto(sockfd, &send_header, sizeof(send_header), 0, &cli, cli_len) == -1) return -1;
+			if (sendto(sockfd, &send_header, sizeof(send_header), 0, &cli, cli_len) == -1) return -1;
+			if (sendto(sockfd, &send_header, sizeof(send_header), 0, &cli, cli_len) == -1) return -1;
+			if (sendto(sockfd, &send_header, sizeof(send_header), 0, &cli, cli_len) == -1) return -1;
+			if (sendto(sockfd, &send_header, sizeof(send_header), 0, &cli, cli_len) == -1) return -1;
+			if (sendto(sockfd, &send_header, sizeof(send_header), 0, &cli, cli_len) == -1) return -1;
+			if (sendto(sockfd, &send_header, sizeof(send_header), 0, &cli, cli_len) == -1) return -1;
+			if (sendto(sockfd, &send_header, sizeof(send_header), 0, &cli, cli_len) == -1) return -1;
+			if (sendto(sockfd, &send_header, sizeof(send_header), 0, &cli, cli_len) == -1) return -1;
+			if (sendto(sockfd, &send_header, sizeof(send_header), 0, &cli, cli_len) == -1) return -1;
+			if (sendto(sockfd, &send_header, sizeof(send_header), 0, &cli, cli_len) == -1) return -1;
+			if (sendto(sockfd, &send_header, sizeof(send_header), 0, &cli, cli_len) == -1) return -1;
+			if (sendto(sockfd, &send_header, sizeof(send_header), 0, &cli, cli_len) == -1) return -1;
+			s.state = FIN_SENT;
+			printf("fin sent to close connection\n");
 
-		s.state = FIN_SENT;
-		printf("fin sent to close connection\n");
-	}
-	/* if receiver sees a FIN header, reply with FINACK and close socket connection */
-	else if (s.state == FIN_SENT) {
-		printf("sending finack to close connection \n");
-		gbnhdr rec_header;
-		make_packet(&rec_header, FINACK, 0, 0, NULL, 0);
-		printf("db6 sending type: %d\n", rec_header.type);
-		if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) return -1;
-		printf("finack sent to close connection\n");
-		close(sockfd);
-	} else if (s.state == FIN_RCVD) {
-		gbnhdr rec_header;
-		make_packet(&rec_header, FIN, 0, 0, NULL, 0);
-		printf("db9 sending type: %d\n", rec_header.type);
-		if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) return -1;
-	}
+		}
+		else if (s.state == FIN_SENT) {
+			gbnhdr finack_packet;
+			printf("finack sent to close connection\n");
+			if (recvfrom(sockfd, &sender_packet, sizeof(sender_packet), 0, (struct sockaddr*)&si_tmp, &tmpsocklen) == -1) {
+				continue;
+			}
+			if (sender_packet.type == FINACK) return 0;
+		/* if receiver sees a FIN header, reply with FINACK and close socket connection */
+		} else if (s.state == FIN_RCVD) {
+			gbnhdr rec_header;
+			make_packet(&rec_header, FINACK, 0, 0, NULL, 0);
+			printf("db9 sending type: %d\n", rec_header.type);
+			if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) return -1;
+			if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) return -1;
+			if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) return -1;
+			if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) return -1;
+			if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) return -1;
+			if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) return -1;
+			if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) return -1;
+			if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) return -1;
+			if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) return -1;
+			if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) return -1;
+			if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) return -1;
+			if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) return -1;
+			if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) return -1;
+			if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) return -1;
+			if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) return -1;
+			return 0;
+		}
+    }
 	return(-1);
 }
 
@@ -304,17 +331,6 @@ int gbn_connect(int sockfd, const struct sockaddr *server, socklen_t socklen){
 			printf("sending s yn ack!!!!!!!!!!!!!!!!!!!!!");
 			printf("db8 sending type: %d\n", send_header.type);
 			sendto(sockfd, &send_header, sizeof(send_header), 0, &serv, s.receiverSocklen);
-/*
-			gbnhdr send_test;
-			make_packet(&send_test, FIN, 0, 0, NULL, 0);
-TEST:
-			if (sendto(sockfd, &send_test, sizeof(send_test), 0, &serv, serv_len) == -1) {
-				printf("sendto failed. wtf??\n");
-			} else {
-				printf("sendto success.\n");
-			}
-			goto TEST;
-*/
 			return 0;
 		}
 		printf("sender received non-synack\n");
@@ -437,19 +453,6 @@ int gbn_accept(int sockfd, struct sockaddr *client, socklen_t *socklen){
 			printf("receiver received synack header\n");
 			s.state = ESTABLISHED;
 			printf("receiver connection established\n");
-/*
-			gbnhdr sender_packet;
-LALALA:
-			if (recvfrom(sockfd, (char *)&sender_packet, sizeof(sender_packet), 0, tmp, tmp_int) != -1) {
-				printf("got type:%d, data: %s\n", sender_packet.type, sender_packet.data);
-				return sockfd;
-			} else {
-				printf("error in acc new pl1\n");
-
-			}
-			printf("ms1\n");
-			goto LALALA;
-*/
 			return sockfd;
 		}
 		printf("received non-synack\n");
