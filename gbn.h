@@ -92,7 +92,7 @@ struct sockaddr serv;
 struct sockaddr cli;
 socklen_t serv_len;
 socklen_t serveraddrlen;
-uint16_t checksum(uint16_t *buf, int nwords)
+
 
 
 /* Shared states (but used somehow differently) */
@@ -117,7 +117,7 @@ size_t lastdatalen = 0;       /* store previous payload length to calculate expe
 
 /* - */
 
-{
+uint16_t checksum(uint16_t *buf, int nwords) {
 	uint32_t sum;
 
 	printf("buf: %u, buf size: %lu, provided size: %d\n", *buf, sizeof(*buf), nwords);
@@ -349,11 +349,11 @@ RECVAGAIN:
         dataackpack.checksum = checksum(&dataackpack, sizeof(dataackpack)/2 );
         //
         sendto(sockfd, &dataackpack, sizeof(dataackpack), 0, clientaddr, clientaddrlen);
-        for(int ii = 0; ii < received->bodylen; ii++) {
+        for(int ii = 0; ii < received->datalen; ii++) {
             buf[ii] = received->data[ii];
         }
         currseq = received->seqnum;
-        lastdatalen = received->bodylen;
+        lastdatalen = received->datalen;
         return lastdatalen;
     } else {
         //printf("wrong or broken pack... re-recv\n");
