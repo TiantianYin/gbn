@@ -275,7 +275,7 @@ int gbn_connect(int sockfd, const struct sockaddr *server, socklen_t socklen){
 	/* send SYN and wait for SYNACK. after that, send a SYNACK back. */
 	while (attempt < MAX_ATTEMPT) {
 		printf("db7 sending type: %d\n", send_header.type);
-		if (sendto(sockfd, &send_header, sizeof(send_header), 0, server, socklen) == -1 ) {
+		if (sendto(sockfd, &send_header, sizeof(send_header), 0, &serv, socklen) == -1 ) {
 			attempt ++;
 			printf("sender send syn failed\n");
 			continue;
@@ -289,7 +289,7 @@ int gbn_connect(int sockfd, const struct sockaddr *server, socklen_t socklen){
 		/* waiting for receiving SYNACK */
 		gbnhdr rec_header;
 		socklen_t tmp_int;
-		if (maybe_recvfrom(sockfd, (char *)&rec_header, sizeof(rec_header), 0, &s.receiverServerAddr, &tmp_int) == -1) {
+		if (maybe_recvfrom(sockfd, (char *)&rec_header, sizeof(rec_header), 0, &serv, &tmp_int) == -1) {
 			printf("sender error in recvfrom syn ack\n");
 			attempt ++;
 			continue;
@@ -302,7 +302,7 @@ int gbn_connect(int sockfd, const struct sockaddr *server, socklen_t socklen){
 			make_packet(&send_header, SYNACK, 0, 0, NULL, 0);
 			printf("sending s yn ack!!!!!!!!!!!!!!!!!!!!!");
 			printf("db8 sending type: %d\n", send_header.type);
-			sendto(sockfd, &send_header, sizeof(send_header), 0, server, s.receiverSocklen);
+			sendto(sockfd, &send_header, sizeof(send_header), 0, &serv, s.receiverSocklen);
 			return 0;
 		}
 		printf("sender received non-synack\n");
