@@ -202,6 +202,8 @@ RECV:
 		if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &s.receiverServerAddr, s.receiverSocklen) == -1) return -1;
 		s.state = FIN_RCVD;
 		return 0;
+	} else {
+		goto RECV;
 	}
 
 	return(-1);
