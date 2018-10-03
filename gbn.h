@@ -94,29 +94,6 @@ socklen_t serv_len;
 socklen_t serveraddrlen;
 
 
-
-/* Shared states (but used somehow differently) */
-int beginseq;
-int currseq;
-int usingsockfd;              /* socket should not change during connection */
-
-/* States used by sender */
-struct sockaddr *serveraddr;  /* server(receiver)'s IP and port are stored here */
-socklen_t serveraddrlen;
-int prevsendtype;             /* 0 for hdronly */
-gbnhdronly prevsent0;         /* SYN/FIN package stored here while sending, resend this var if timeout */
-gbnhdr prevsent1;             /* current DATA package stored here while sending, resend this var if timeout */
-gbnhdr prevsent2;             /* next package (for fast mode) */
-int numtried;
-int sendsecond = 0;           /* sendsecond == 1 means "fast mode" */
-
-/* States used by receiver */
-struct sockaddr *clientaddr;  /* client(sender)'s IP and port are stored here */
-socklen_t clientaddrlen;
-size_t lastdatalen = 0;       /* store previous payload length to calculate expected seqnum */
-
-/* - */
-
 uint16_t checksum(uint16_t *buf, int nwords) {
 	uint32_t sum;
 
@@ -272,6 +249,7 @@ RECVAGAIN:
     recvfrom(sockfd, &tmpbuf, sizeof(tmpbuf), 0, &si_tmp, &tmpsocklen);
     printf("received type: %d\n", received->type);
     goto RECVAGAIN;
+    return 0;
 }
 
 
