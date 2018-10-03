@@ -157,7 +157,7 @@ ssize_t gbn_recv(int sockfd, void *buf, size_t len, int flags){
 
 
 RECV:
-	if (recvfrom(sockfd, &sender_packet, sizeof(sender_packet), 0, &tmp, &tmpsocklen) == -1) {
+	if (maybe_recvfrom(sockfd, &sender_packet, sizeof(sender_packet), 0, &tmp, &tmpsocklen) == -1) {
 		/*printf("error in gbn_recv pl1\n");*/
 		goto RECV;
 	}
@@ -244,11 +244,11 @@ int gbn_close(int sockfd){
 			struct sockaddr tmp;
 			socklen_t tmp_int;
 			gbnhdr finack_packet;
-			if (recvfrom(sockfd, &finack_packet, sizeof(finack_packet), 0, &tmp, &tmp_int) == -1) {
+			if (maybe_recvfrom(sockfd, &finack_packet, sizeof(finack_packet), 0, &tmp, &tmp_int) == -1) {
 				continue;
 			}
 			if (finack_packet.type == FINACK) {
-				printf("client close.");
+				printf("client close.\n");
 				return 0;
 			}
 		/* if receiver sees a FIN header, reply with FINACK and close socket connection */
@@ -272,7 +272,7 @@ int gbn_close(int sockfd){
 			if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) return -1;
 			if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) return -1;
 			if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) return -1;
-			printf("server close.");
+			printf("server close.\n");
 			return 0;
 		}
     }
