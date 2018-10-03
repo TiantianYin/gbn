@@ -7,6 +7,8 @@ socklen_t serv_len;
 socklen_t cli_len;
 int* attempts;
 int attempt = 0;
+int* seqOnTheFly;
+int numPackets;
 
 uint16_t checksum(uint16_t *buf, int nwords)
 {
@@ -25,6 +27,11 @@ uint16_t checksum(uint16_t *buf, int nwords)
 
 void sig_handler(int signum){
 	s.timed_out = 0;
+	attempt ++;
+	int i;
+	for (i = 0; i < numPackets; i++) {
+		if (seqOnTheFly[i]) attempts[i]++;
+	}
 	printf("Timeout has occurred\n");
 	signal(SIGALRM, sig_handler);
 	alarm(TIMEOUT);
@@ -79,13 +86,16 @@ int check_seqnum(const gbnhdr packet, int expected) {
 
 ssize_t gbn_send(int sockfd, const void *buf, size_t len, int flags){
 	/* split data into multiple packets */
-	int numPackets = (int) len / DATALEN;
+	numPackets = (int) len / DATALEN;
 	int lastPacketSize = len % DATALEN;
 	if (len % DATALEN != 0) numPackets ++;
 	printf("in send and ready to send %i packets\n", numPackets);
 	int att[numPackets];
 	memset(att, 0, numPackets * sizeof(int));
 	attempts = att;
+	int sOnTheFly[numPackets];
+	memset(sOnTheFly, 0, numPackets * sizeof(int));
+	seqOnTheFly = sOnTheFly;
 	char * slicedBuf = malloc(DATALEN);
 	int i = 0;
 	signal(SIGALRM, sig_handler);
@@ -114,6 +124,7 @@ ssize_t gbn_send(int sockfd, const void *buf, size_t len, int flags){
 				attempts[i] ++;
 				continue;
 			}
+			seqOnTheFly[s.send_seqnum] = 1;
 			if (j == 0) alarm(TIMEOUT);
 			s.send_seqnum ++;
 			j++;
@@ -132,7 +143,8 @@ ssize_t gbn_send(int sockfd, const void *buf, size_t len, int flags){
 			&& check_seqnum(rec_header, s.rec_seqnum) == 0) {
 				printf("received successfully\n");
 				s.mode = s.mode == SLOW ? MODERATE : FAST;
-				s.rec_seqnum ++;
+				seqOnTheFly[s.rec_seqnum] = 0;
+				attempts[s.rec_seqnum++] = 0;
 				unACK --;
 				alarm(TIMEOUT); 
 			} else {
@@ -334,9 +346,6 @@ int gbn_connect(int sockfd, const struct sockaddr *server, socklen_t socklen){
 			sendto(sockfd, &send_header, sizeof(send_header), 0, &serv, s.receiverSocklen);
 			return 0;
 		}
-		printf("sender received non-synack\n");
-		printf("recived type: %d\n",rec_header.type);
-		attempt ++;
 	}
 	/* if reach max number of tries, close the connection */
 	s.state = CLOSED;
