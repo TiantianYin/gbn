@@ -13,7 +13,6 @@ uint16_t checksum(uint16_t *buf, int nwords)
 	printf("buf: %u, buf size: %lu, provided size: %d\n", *buf, sizeof(*buf), nwords);
 
 	for (sum = 0; nwords > 0; nwords--) {
-		printf("in buf: %u\n", *buf);
 		sum += *buf++;
 	}
 	sum = (sum >> 16) + (sum & 0xffff);
@@ -107,7 +106,6 @@ ssize_t gbn_send(int sockfd, const void *buf, size_t len, int flags){
 
 			gbnhdr packet;
 			make_packet(&packet, DATA, s.send_seqnum, -1, slicedBuf, currSize);
-			/*make_packet(&packet, SYNACK, 0, 0, NULL, 0);*/
 			printf("db2 sending type: %d, data: %s\n", packet.type, packet.data);
 			if (attempts[i] < MAX_ATTEMPT && sendto(sockfd, &packet, sizeof(packet), 0, &serv, serv_len) == -1) {
 				attempts[i] ++;
@@ -171,11 +169,9 @@ RECV:
 
 	/* if a data packet is received, check packet to verify its type */
 	/*if (check_packetType(sender_packet, DATA) == 0){*/
-	printf("juuuust test db0\n");
 	if (sender_packet.type == DATA) {
 		alarm(TIMEOUT);
 		/* check data validity */
-		printf("juuuust test db1\n");
 		if (check_seqnum(sender_packet, s.rec_seqnum) == -1) {
 			 printf("received an unexpected seqnum, discarding data...\n");
 			return 0;
