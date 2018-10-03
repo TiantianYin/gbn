@@ -554,14 +554,14 @@ LALALA:
 			if (recvfrom(sockfd, (char *)&sender_packet, sizeof(sender_packet), 0, tmp, tmp_int) != -1) {
 				printf("got type:%d, data: %s\n", sender_packet.type, sender_packet.data);
 				printf("sockfd: %d\n", sockfd);
-				return 0;
+				return sockfd;
 			} else {
 				printf("error in acc new pl1\n");
 
 			}
 			printf("ms1\n");
 			goto LALALA;
-			return 0;
+			return sockfd;
 		}
 		printf("received non-synack\n");
 		printf("recived type: %d\n",send_header.type);
