@@ -70,7 +70,7 @@ enum {
     FAST = 4
 };
 
-exterm state_t s;
+extern state_t s;
 
 void gbn_init();
 int gbn_connect(int sockfd, const struct sockaddr *server, socklen_t socklen);
