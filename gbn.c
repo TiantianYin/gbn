@@ -170,14 +170,14 @@ RECV:
 		/* check data validity */
 		if (check_seqnum(sender_packet, s.rec_seqnum) == -1) {
 			 printf("received an unexpected seqnum, discarding data...\n");
-			return 0;
+			goto RECV;
 		}
 		printf("juuuust test db2\n");
 		int sender_packet_size = sender_packet.datalen;
 		printf("juuuust test db2.5\n");
 		if (checksum((uint16_t *)&sender_packet.data, (1 + sender_packet_size) / 2) == -1) {
 			printf("data is corrupt\n");
-			return 0;
+			goto RECV;
 		}
 		printf("juuuust test db3\n");
 
