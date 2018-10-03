@@ -249,13 +249,16 @@ int gbn_close(int sockfd){
 			struct sockaddr tmp;
 			socklen_t tmp_int;
 			gbnhdr finack_packet;
-			printf("finack sent to close connection\n");
 			if (recvfrom(sockfd, &finack_packet, sizeof(finack_packet), 0, &tmp, &tmp_int) == -1) {
 				continue;
 			}
-			if (finack_packet.type == FINACK) return 0;
+			if (finack_packet.type == FINACK) {
+				printf("client close.");
+				return 0;
+			}
 		/* if receiver sees a FIN header, reply with FINACK and close socket connection */
 		} else if (s.state == FIN_RCVD) {
+			printf("finack sent to close connection\n");
 			gbnhdr rec_header;
 			make_packet(&rec_header, FINACK, 0, 0, NULL, 0);
 			printf("db9 sending type: %d\n", rec_header.type);
@@ -274,6 +277,7 @@ int gbn_close(int sockfd){
 			if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) return -1;
 			if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) return -1;
 			if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) return -1;
+			printf("server close.");
 			return 0;
 		}
     }
