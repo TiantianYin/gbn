@@ -237,14 +237,22 @@ ssize_t gbn_send(int sockfd, const void *buf, size_t len, int flags){
 ssize_t gbn_recv(int sockfd, void *buf, size_t len, int flags){
 	/* receiver receive packet from sender and if valid, send DATAACK */
 	printf ("in receive\n");
+	
 	gbnhdr sender_packet;
+
 	struct sockaddr t;
 	struct sockaddr* tmp = &t;
 	socklen_t t_int;
-	socklen_t* tmp_int = &t_int;
+	/*socklen_t* tmp_int = &t_int;*/
+
+	gbnhdr tmpbuf;
+    struct sockaddr_in si_tmp;
+    int tmpsocklen;
+    gbnhdr* received;
+
 
 RECV:
-	if (recvfrom(sockfd, (char *)&sender_packet, sizeof(sender_packet), 0, tmp, tmp_int) == -1) {
+	if (recvfrom(sockfd, &sender_packet, sizeof(sender_packet), 0, &si_tmp, &tmpsocklen) == -1) {
 		/*printf("error in gbn_recv pl1\n");*/
 		goto RECV;
 	}
