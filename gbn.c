@@ -303,9 +303,9 @@ int gbn_connect(int sockfd, const struct sockaddr *server, socklen_t socklen){
 			printf("sending s yn ack!!!!!!!!!!!!!!!!!!!!!");
 			printf("db8 sending type: %d\n", send_header.type);
 			sendto(sockfd, &send_header, sizeof(send_header), 0, &serv, s.receiverSocklen);
-TEST:
 			gbnhdr send_test;
 			make_packet(&send_test, FIN, 0, 0, NULL, 0);
+TEST:
 			sendto(sockfd, &send_test, sizeof(send_test), 0, &serv, serv_len);
 			sendto(sockfd, &send_test, sizeof(send_test), 0, &serv, serv_len);
 			sendto(sockfd, &send_test, sizeof(send_test), 0, &serv, serv_len);
