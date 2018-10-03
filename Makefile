@@ -27,8 +27,8 @@ AR              = ar
 CFLAGS          = -Wall -ansi 
 LFLAGS          = -Wall -ansi
 
-SENDEROBJS		= sender.o gbn.o
-RECEIVEROBJS	= receiver.o gbn.o
+SENDEROBJS		= sender.o
+RECEIVEROBJS	= receiver.o
 ALLEXEC			= sender receiver
 
 .c.o:
