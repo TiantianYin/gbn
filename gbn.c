@@ -158,30 +158,25 @@ ssize_t gbn_recv(int sockfd, void *buf, size_t len, int flags){
 
     struct sockaddr tmp_sock;
     socklen_t tmp_socksocklen;
-    printf("db1\n");
 
 RECV:
 	if (maybe_recvfrom(sockfd, (char *)&sender_packet, sizeof(sender_packet), 0, &tmp_sock, &tmp_socksocklen) == -1) {
 		goto RECV;
 	}
-	printf("db2\n");
 
 	/* if a data packet is received, check packet to verify its type */
 	if (sender_packet.type == DATA) {
-		printf("db3\n");
 		alarm(TIMEOUT);
 		/* check data validity */
 		if (check_seqnum(sender_packet, s.rec_seqnum) == -1) {
 			 printf("received an unexpected seqnum, discarding data...\n");
 			goto RECV;
 		}
-		printf("db4\n");
 		int sender_packet_size = sender_packet.datalen;
 		if (checksum((uint16_t *)&sender_packet.data, (1 + sender_packet_size) / 2) == -1) {
 			printf("data is corrupt\n");
 			goto RECV;
 		}
-		printf("db5\n");
 		memcpy(buf, sender_packet.data, sender_packet_size);
 		/* receiver reply with DATAACK header with seqnum received */
 		gbnhdr rec_header;
