@@ -63,6 +63,7 @@ int main(int argc, char *argv[])
 		else if (numRead == 0)
 			break;
 		fwrite(buf, 1, numRead, outputFile);
+		fclose(outputFile)
 	}
 
 	/*----- Closing the socket -----*/
