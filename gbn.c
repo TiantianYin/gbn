@@ -5,6 +5,8 @@ struct sockaddr serv;
 struct sockaddr cli;
 socklen_t serv_len;
 socklen_t cli_len;
+int* attempts;
+int attempt = 0;
 
 uint16_t checksum(uint16_t *buf, int nwords)
 {
@@ -81,7 +83,6 @@ ssize_t gbn_send(int sockfd, const void *buf, size_t len, int flags){
 	int lastPacketSize = len % DATALEN;
 	if (len % DATALEN != 0) numPackets ++;
 	printf("in send and ready to send %i packets\n", numPackets);
-	int attempts[numPackets];
 	memset(attempts, 0, numPackets * sizeof(int));
 	char * slicedBuf = malloc(DATALEN);
 	int i = 0;
@@ -296,7 +297,6 @@ int gbn_connect(int sockfd, const struct sockaddr *server, socklen_t socklen){
 	signal(SIGALRM, sig_handler);
 
 
-	int attempt = 0;
 	s.timed_out = -1;
 	printf("gbn_connect db1\n");
 	/* send SYN and wait for SYNACK. after that, send a SYNACK back. */
