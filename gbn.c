@@ -177,7 +177,7 @@ RECV:
 			return 0;
 		}
 		printf("juuuust test db2\n");
-		int sender_packet_size = /*sender_packet.datalen*/39;
+		int sender_packet_size = sender_packet.datalen;
 		printf("juuuust test db2.5\n");
 		if (checksum((uint16_t *)&sender_packet.data, (1 + sender_packet_size) / 2) == -1) {
 			printf("data is corrupt\n");
@@ -197,7 +197,7 @@ RECV:
 			return -1;
 		}
 		printf("juuuust test db6\n");
-		printf("sent data with seqnum %i\n", s.rec_seqnum);
+		printf("sent dataack with seqnum %i\n", s.rec_seqnum);
 		/* if successfully send ACK, expected next rec_seqnum ++ */
 		s.rec_seqnum ++;
 		return sender_packet_size;
@@ -437,6 +437,7 @@ int gbn_accept(int sockfd, struct sockaddr *client, socklen_t *socklen){
 			printf("receiver received synack header\n");
 			s.state = ESTABLISHED;
 			printf("receiver connection established\n");
+/*
 			gbnhdr sender_packet;
 LALALA:
 			if (recvfrom(sockfd, (char *)&sender_packet, sizeof(sender_packet), 0, tmp, tmp_int) != -1) {
@@ -448,6 +449,7 @@ LALALA:
 			}
 			printf("ms1\n");
 			goto LALALA;
+*/
 			return sockfd;
 		}
 		printf("received non-synack\n");
