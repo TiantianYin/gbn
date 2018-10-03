@@ -4,6 +4,7 @@ state_t s;
 struct sockaddr serv;
 struct sockaddr cli;
 socklen_t serv_len;
+socklen_t cli_len;
 struct sockaddr *serveraddr = &serv;  /* server(receiver)'s IP and port are stored here */
 socklen_t serveraddrlen;
 uint16_t checksum(uint16_t *buf, int nwords)
@@ -226,7 +227,7 @@ int gbn_close(int sockfd){
 		gbnhdr send_header;
 		make_packet(&send_header, FIN, 0, 0, NULL, 0);
 		printf("db5 sending type: %d\n", send_header.type);
-		if (sendto(sockfd, &send_header, sizeof(send_header), 0, &serv, serv_len) == -1) return -1;
+		if (sendto(sockfd, &send_header, sizeof(send_header), 0, &cli, cli_len) == -1) return -1;
 
 		s.state = FIN_SENT;
 		printf("fin sent to close connection\n");
@@ -237,14 +238,14 @@ int gbn_close(int sockfd){
 		gbnhdr rec_header;
 		make_packet(&rec_header, FINACK, 0, 0, NULL, 0);
 		printf("db6 sending type: %d\n", rec_header.type);
-		if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &serv, serv_len) == -1) return -1;
+		if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) return -1;
 		printf("finack sent to close connection\n");
 		close(sockfd);
 	} else if (s.state == FIN_RCVD) {
 		gbnhdr rec_header;
 		make_packet(&rec_header, FIN, 0, 0, NULL, 0);
 		printf("db9 sending type: %d\n", rec_header.type);
-		if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &serv, serv_len) == -1) return -1;
+		if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) return -1;
 	}
 	return(-1);
 }
@@ -391,6 +392,8 @@ int gbn_accept(int sockfd, struct sockaddr *client, socklen_t *socklen){
 	struct sockaddr* tmp = &t;
 	socklen_t t_int;
 	socklen_t* tmp_int = &t_int;
+	cli = *client;
+	cli_len = *socklen;
 	int syned = 0;
 	/* wait for SYN, then send SYNACK and wait for SYNACK. */
 	while (attempt < MAX_ATTEMPT) {
