@@ -432,7 +432,7 @@ int gbn_accept(int sockfd, struct sockaddr *client, socklen_t *socklen){
 			printf("receiver received synack header\n");
 			s.state = ESTABLISHED;
 			printf("receiver connection established\n");
-/*
+
 			gbnhdr sender_packet;
 LALALA:
 			if (recvfrom(sockfd, (char *)&sender_packet, sizeof(sender_packet), 0, tmp, tmp_int) != -1) {
@@ -460,7 +460,6 @@ LALALA:
 			}
 			printf("ms4\n");
 			goto LALALA;
-*/
 			return 0;
 		}
 		printf("received non-synack\n");
