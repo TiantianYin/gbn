@@ -245,12 +245,14 @@ int gbn_close(int sockfd){
 
 		}
 		else if (s.state == FIN_SENT) {
+			struct sockaddr tmp;
+			socklen_t tmp_int;
 			gbnhdr finack_packet;
 			printf("finack sent to close connection\n");
-			if (recvfrom(sockfd, &sender_packet, sizeof(sender_packet), 0, (struct sockaddr*)&si_tmp, &tmpsocklen) == -1) {
+			if (recvfrom(sockfd, &finack_packet, sizeof(finack_packet), 0, &tmp, &tmp_int) == -1) {
 				continue;
 			}
-			if (sender_packet.type == FINACK) return 0;
+			if (finack_packet.type == FINACK) return 0;
 		/* if receiver sees a FIN header, reply with FINACK and close socket connection */
 		} else if (s.state == FIN_RCVD) {
 			gbnhdr rec_header;
