@@ -239,14 +239,17 @@ ssize_t gbn_send(int sockfd, const void *buf, size_t len, int flags){
 
 
 ssize_t gbn_recv(int sockfd, void *buf, size_t len, int flags){
-    gbnhdr tmpbuf;
-    struct sockaddr si_tmp;
-    socklen_t tmpsocklen;
+	gbnhdr tmpbuf;
+	struct sockaddr si_tmp;
+	socklen_t tmpsocklen;
 RECVAGAIN:
-    recvfrom(sockfd, &tmpbuf, sizeof(tmpbuf), 0, &si_tmp, &tmpsocklen);
-    printf("received type: %d, data: %s\n", tmpbuf.type, tmpbuf.data);
-    goto RECVAGAIN;
-    return 0;
+    if (recvfrom(sockfd, &tmpbuf, sizeof(tmpbuf), 0, &si_tmp, &tmpsocklen) == -1) {
+    	printf("received failed:\n");
+		goto RECVAGAIN;
+	} else {
+		printf("received type: %d, data: %s\n", tmpbuf.type, tmpbuf.data);
+	}
+	return 0;
 }
 
 
