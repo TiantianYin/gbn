@@ -5,8 +5,7 @@ struct sockaddr serv;
 struct sockaddr cli;
 socklen_t serv_len;
 socklen_t cli_len;
-struct sockaddr *serveraddr = &serv;  /* server(receiver)'s IP and port are stored here */
-socklen_t serveraddrlen;
+
 uint16_t checksum(uint16_t *buf, int nwords)
 {
 	uint32_t sum;
@@ -286,9 +285,7 @@ int gbn_connect(int sockfd, const struct sockaddr *server, socklen_t socklen){
 	s.mode = SLOW;
 	s.senderSocklen = socklen;
 	serv_len = socklen;
-	serveraddrlen = socklen;
 	printf("gbn_connect db-1\n");
-	*serveraddr = *server;
 	serv = *server;
 	
 
