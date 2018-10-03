@@ -70,6 +70,8 @@ enum {
     FAST = 4
 };
 
+
+
 void gbn_init();
 int gbn_connect(int sockfd, const struct sockaddr *server, socklen_t socklen);
 int gbn_listen(int sockfd, int backlog);
@@ -85,7 +87,7 @@ ssize_t  maybe_recvfrom(int  s, char *buf, size_t len, int flags, \
 
 uint16_t checksum(uint16_t *buf, int nwords);
 
-
+state_t s;
 struct sockaddr serv;
 struct sockaddr cli;
 socklen_t serv_len;
