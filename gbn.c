@@ -160,12 +160,12 @@ ssize_t gbn_recv(int sockfd, void *buf, size_t len, int flags){
 
 	gbnhdr tmpbuf;
     struct sockaddr_in si_tmp;
-    int tmpsocklen;
+    socklen_t tmpsocklen;
     gbnhdr* received;
 
 
 RECV:
-	if (recvfrom(sockfd, &sender_packet, sizeof(sender_packet), 0, &si_tmp, &tmpsocklen) == -1) {
+	if (recvfrom(sockfd, &sender_packet, sizeof(sender_packet), 0, (struct sockaddr*)&si_tmp, &tmpsocklen) == -1) {
 		/*printf("error in gbn_recv pl1\n");*/
 		goto RECV;
 	}
