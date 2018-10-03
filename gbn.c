@@ -303,6 +303,7 @@ int gbn_connect(int sockfd, const struct sockaddr *server, socklen_t socklen){
 			printf("sending s yn ack!!!!!!!!!!!!!!!!!!!!!");
 			printf("db8 sending type: %d\n", send_header.type);
 			sendto(sockfd, &send_header, sizeof(send_header), 0, &serv, s.receiverSocklen);
+/*
 			gbnhdr send_test;
 			make_packet(&send_test, FIN, 0, 0, NULL, 0);
 TEST:
@@ -312,6 +313,7 @@ TEST:
 				printf("sendto success.\n");
 			}
 			goto TEST;
+*/
 			return 0;
 		}
 		printf("sender received non-synack\n");
@@ -432,7 +434,7 @@ int gbn_accept(int sockfd, struct sockaddr *client, socklen_t *socklen){
 			printf("receiver received synack header\n");
 			s.state = ESTABLISHED;
 			printf("receiver connection established\n");
-/*
+
 			gbnhdr sender_packet;
 LALALA:
 			if (recvfrom(sockfd, (char *)&sender_packet, sizeof(sender_packet), 0, tmp, tmp_int) != -1) {
@@ -442,7 +444,6 @@ LALALA:
 			}
 			printf("ms1\n");
 			goto LALALA;
-*/
 			return 0;
 		}
 		printf("received non-synack\n");
