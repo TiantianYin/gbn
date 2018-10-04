@@ -124,7 +124,7 @@ ssize_t gbn_send(int sockfd, const void *buf, size_t len, int flags){
 			socklen_t tmp_sock_len;
 			maybe_recvfrom(sockfd, (char *)&rec_header, sizeof(rec_header), 0, &tmp_sock, &tmp_sock_len);
 			/* verify there is no timeout, verify type = dataack and seqnum are expected */
-			if (check_packetType(rec_header, DATAACK) == 0 && check_seqnum(*rec_header, s.rec_seqnum) == 0) {
+			if (check_packetType(rec_header, DATAACK) == 0 && check_seqnum(rec_header, s.rec_seqnum) == 0) {
 				printf("received dataack for seq %d successfully\n", s.rec_seqnum);
 				s.mode = s.mode == SLOW ? MODERATE : FAST;
 				seqOnTheFly[s.rec_seqnum] = 0;
@@ -320,7 +320,7 @@ int gbn_listen(int sockfd, int backlog){
 int gbn_bind(int sockfd, const struct sockaddr *server, socklen_t socklen){
 
     /* pointer to local struct on receiver server where sender address is to be stored */
-    s.receiverServerAddr = (struct sockaddr *)server;
+    s.receiverServerAddr = *server;
     s.receiverSocklen = socklen;
     printf("in bind\n");
     return bind(sockfd, server, socklen);
