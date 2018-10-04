@@ -64,8 +64,8 @@ int check_packetType(const gbnhdr packet, int type) {
  * rec_seqnum should be expected seqnum
  * seq for ACK should be last sent seqnum
  */
-int check_seqnum(gbnhdr *packet, int expected) {
-	if (packet->seqnum != expected) return -1;
+int check_seqnum(const gbnhdr packet, int expected) {
+	if (packet.seqnum != expected) return -1;
 	return 0;
 }
 
@@ -124,7 +124,7 @@ ssize_t gbn_send(int sockfd, const void *buf, size_t len, int flags){
 			socklen_t tmp_sock_len;
 			maybe_recvfrom(sockfd, (char *)&rec_header, sizeof(rec_header), 0, &tmp_sock, &tmp_sock_len);
 			/* verify there is no timeout, verify type = dataack and seqnum are expected */
-			if (check_packetType(rec_header, DATAACK) == 0 && check_seqnum(rec_header, s.rec_seqnum) == 0) {
+			if (check_packetType(rec_header, DATAACK) == 0 && check_seqnum(*rec_header, s.rec_seqnum) == 0) {
 				printf("received dataack for seq %d successfully\n", s.rec_seqnum);
 				s.mode = s.mode == SLOW ? MODERATE : FAST;
 				seqOnTheFly[s.rec_seqnum] = 0;
@@ -267,7 +267,7 @@ int gbn_connect(int sockfd, const struct sockaddr *server, socklen_t socklen){
 	printf("in gbn connect\n");
 	/* Define Global State */
 	s.mode = SLOW;
-	s.senderServerAddr = (struct sockaddr *)server;
+	s.senderServerAddr = *server;
 	s.senderSocklen = socklen;
 
 	gbnhdr send_header;
@@ -373,9 +373,9 @@ int gbn_accept(int sockfd, struct sockaddr *client, socklen_t *socklen){
 			}
 			syned = 1;
 			cli = *tmp_sock;
-			cli_len = *tmp_sock;
+			cli_len = *tmp_sock_len;
 		}
-		if (sendto(sockfd, &rec_header, sizeof(gbnhdr), 0, cli, *cli_len) == -1 ) {
+		if (sendto(sockfd, &rec_header, sizeof(gbnhdr), 0, &cli, cli_len) == -1 ) {
 			attempt ++;
 			printf("receiver send synack failed\n");
 			continue;
