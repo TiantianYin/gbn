@@ -261,6 +261,7 @@ int gbn_close(int sockfd){
 			printf("server send finack to client to close connection\n");
 			gbnhdr *rec_header = malloc(sizeof(gbnhdr));
 			make_packet(rec_header, FINACK, 0, 0, NULL, 0);
+			printf("wtf??type: %d\n", rec_header->type);
 			int i;
 			for (i = 0; i < 10; i ++) {
 				if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) {
