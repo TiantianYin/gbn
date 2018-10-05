@@ -296,7 +296,7 @@ int gbn_connect(int sockfd, const struct sockaddr *server, socklen_t socklen){
 		s.state = SYN_SENT;
 		alarm(TIMEOUT);
 		/* waiting for receiving SYNACK */
-		gbnhdr *rec_header = malloc(sizeof(gbnhdr);
+		gbnhdr *rec_header = malloc(sizeof(gbnhdr));
 		socklen_t tmp_sock_len;
 		if (maybe_recvfrom(sockfd, (char *)rec_header, sizeof(*rec_header), 0, &serv, &tmp_sock_len) == -1) {
 			printf("sender error in recvfrom syn ack\n");
