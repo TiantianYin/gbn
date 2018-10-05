@@ -224,60 +224,14 @@ int gbn_close(int sockfd){
 			printf("client send fin to server to close connection \n");
 			gbnhdr* send_header = malloc(sizeof(gbnhdr));
 			make_packet(send_header, FIN, 0, 0, NULL, 0);
-			if (sendto(sockfd, send_header, sizeof(*send_header), 0, &serv, serv_len) == -1) {
-				free(send_header);
-				return -1;
-			}
-			if (sendto(sockfd, send_header, sizeof(*send_header), 0, &serv, serv_len) == -1) {
-				free(send_header);
-				return -1;
-			}
-			if (sendto(sockfd, send_header, sizeof(*send_header), 0, &serv, serv_len) == -1) {
-				free(send_header);
-				return -1;
-			}
-			if (sendto(sockfd, send_header, sizeof(*send_header), 0, &serv, serv_len) == -1) {
-				free(send_header);
-				return -1;
-			}
-			if (sendto(sockfd, send_header, sizeof(*send_header), 0, &serv, serv_len) == -1) {
-				free(send_header);
-				return -1;
-			}
-			if (sendto(sockfd, send_header, sizeof(*send_header), 0, &serv, serv_len) == -1) {
-				free(send_header);
-				return -1;
-			}
-			if (sendto(sockfd, send_header, sizeof(*send_header), 0, &serv, serv_len) == -1) {
-				free(send_header);
-				return -1;
-			}
-			if (sendto(sockfd, send_header, sizeof(*send_header), 0, &serv, serv_len) == -1) {
-				free(send_header);
-				return -1;
-			}
-			if (sendto(sockfd, send_header, sizeof(*send_header), 0, &serv, serv_len) == -1) {
-				free(send_header);
-				return -1;
-			}
-			if (sendto(sockfd, send_header, sizeof(*send_header), 0, &serv, serv_len) == -1) {
-				free(send_header);
-				return -1;
-			}
-			if (sendto(sockfd, send_header, sizeof(*send_header), 0, &serv, serv_len) == -1) {
-				free(send_header);
-				return -1;
-			}
-			if (sendto(sockfd, send_header, sizeof(*send_header), 0, &serv, serv_len) == -1) {
-				free(send_header);
-				return -1;
-			}
-			if (sendto(sockfd, send_header, sizeof(*send_header), 0, &serv, serv_len) == -1) {
-				free(send_header);
-				return -1;
+			int i;
+			for (i = 0; i < 100; i ++) {
+				if (sendto(sockfd, send_header, sizeof(*send_header), 0, &serv, serv_len) == -1) {
+					free(send_header);
+					return -1;
+				}
 			}
 			free(send_header);
-
 			s.state = FIN_SENT;
 
 		}
@@ -300,51 +254,13 @@ int gbn_close(int sockfd){
 			printf("server send finack to client to close connection\n");
 			gbnhdr *rec_header = malloc(sizeof(gbnhdr));
 			make_packet(rec_header, FINACK, 0, 0, NULL, 0);
-			if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) {
-				free(rec_header);
-				return -1;
+			int i;
+			for (i = 0; i < 100; i ++) {
+				if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) {
+					free(rec_header);
+					return -1;
+				}
 			}
-			if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) {
-				free(rec_header);
-				return -1;
-			}
-			if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) {
-				free(rec_header);
-				return -1;
-			}
-			if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) {
-				free(rec_header);
-				return -1;
-			}
-			if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) {
-				free(rec_header);
-				return -1;
-			}
-			if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) {
-				free(rec_header);
-				return -1;
-			}
-			if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) {
-				free(rec_header);
-				return -1;
-			}
-			if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) {
-				free(rec_header);
-				return -1;
-			}
-			if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) {
-				free(rec_header);
-				return -1;
-			}
-			if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) {
-				free(rec_header);
-				return -1;
-			}
-			if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) {
-				free(rec_header);
-				return -1;
-			}
-			
 			free(rec_header);
 			printf("server close.\n");
 			return 0;
