@@ -306,7 +306,7 @@ int gbn_connect(int sockfd, const struct sockaddr *server, socklen_t socklen){
 		}
 		free(rec_header);
 		/* check for timeout, check if header type is SYNACK */
-		if (check_packetType(rec_header, SYNACK) == 0) {
+		if (check_packetType(*rec_header, SYNACK) == 0) {
 			printf("sender received synack header\n");
 			s.state = ESTABLISHED;
 			printf("sender connection established\n");
@@ -391,7 +391,7 @@ int gbn_accept(int sockfd, struct sockaddr *client, socklen_t *socklen){
 			}
 			syned = 1;
 			cli = *tmp_sock;
-			cli_len = *tmp_sock;
+			cli_len = *tmp_sock_len;
 		}
 		free(send_header_syn);
 		if (sendto(sockfd, rec_header, sizeof(*rec_header), 0, tmp_sock, *tmp_sock_len) == -1 ) {
@@ -403,7 +403,7 @@ int gbn_accept(int sockfd, struct sockaddr *client, socklen_t *socklen){
 		s.senderSocklen = *tmp_sock_len;
 		alarm(TIMEOUT);
 		/* waiting for receiving SYNACK */
-		gbnhdr* send_header = malloc(gbnhdr);
+		gbnhdr* send_header = malloc(sizeof(gbnhdr));
 		if (maybe_recvfrom(sockfd, (char *)send_header, sizeof(*send_header), 0, tmp_sock, tmp_sock_len) == -1) {
 			printf("receiver error in recvfrom syn ack\n");
 			attempt ++;
