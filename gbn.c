@@ -203,7 +203,7 @@ RECV:
 			free(rec_header);
 			return -1;
 		}
-		free(rec_header)
+		free(rec_header);
 		s.state = FIN_RCVD;
 		free(sender_packet);
 		return 0;
