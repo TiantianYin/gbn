@@ -243,6 +243,7 @@ int gbn_close(int sockfd){
 			socklen_t tmp_sock_len;
 			gbnhdr *finack_packet = malloc(sizeof(gbnhdr));
 			if (maybe_recvfrom(sockfd, (char *)finack_packet, sizeof(*finack_packet), 0, &tmp_sock, &tmp_sock_len) == -1) {
+				printf("wtf\n");
 				free(finack_packet);
 				continue;
 			}
