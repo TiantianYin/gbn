@@ -221,6 +221,7 @@ int gbn_close(int sockfd){
 	/* sender initiate a FIN request and wait for FINACK */
     while (1) {
     	if (s.state == ESTABLISHED || s.state == SYN_SENT || s.state == SYN_RCVD) {
+    		printf("db111111\n");
 			printf("client send fin to server to close connection \n");
 			gbnhdr* send_header = malloc(sizeof(gbnhdr));
 			make_packet(send_header, FIN, 0, 0, NULL, 0);
@@ -236,6 +237,7 @@ int gbn_close(int sockfd){
 
 		}
 		else if (s.state == FIN_SENT) {
+			printf("db222222\n");
 			struct sockaddr tmp_sock;
 			socklen_t tmp_sock_len;
 			gbnhdr *finack_packet = malloc(sizeof(gbnhdr));
@@ -251,6 +253,7 @@ int gbn_close(int sockfd){
 			free(finack_packet);
 		/* if receiver sees a FIN header, reply with FINACK and close socket connection */
 		} else if (s.state == FIN_RCVD) {
+			printf("db33333\n");
 			printf("server send finack to client to close connection\n");
 			gbnhdr *rec_header = malloc(sizeof(gbnhdr));
 			make_packet(rec_header, FINACK, 0, 0, NULL, 0);
