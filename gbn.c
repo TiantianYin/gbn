@@ -226,7 +226,7 @@ int gbn_close(int sockfd){
 			gbnhdr* send_header = malloc(sizeof(gbnhdr));
 			make_packet(send_header, FIN, 0, 0, NULL, 0);
 			int i;
-			for (i = 0; i < 100; i ++) {
+			for (i = 0; i < 10; i ++) {
 				if (sendto(sockfd, send_header, sizeof(*send_header), 0, &serv, serv_len) == -1) {
 					free(send_header);
 					return -1;
@@ -258,7 +258,7 @@ int gbn_close(int sockfd){
 			gbnhdr *rec_header = malloc(sizeof(gbnhdr));
 			make_packet(rec_header, FINACK, 0, 0, NULL, 0);
 			int i;
-			for (i = 0; i < 100; i ++) {
+			for (i = 0; i < 10; i ++) {
 				if (sendto(sockfd, &rec_header, sizeof(rec_header), 0, &cli, cli_len) == -1) {
 					free(rec_header);
 					return -1;
@@ -374,8 +374,6 @@ int gbn_accept(int sockfd, struct sockaddr *client, socklen_t *socklen){
 	struct sockaddr* tmp_sock = &t;
 	socklen_t t_sock_len;
 	socklen_t* tmp_sock_len = &t_sock_len;
-	cli = *client;
-	cli_len = *socklen;
 	int syned = 0;
 	/* wait for SYN, then send SYNACK and wait for SYNACK. */
 	while (attempt < MAX_ATTEMPT) {
